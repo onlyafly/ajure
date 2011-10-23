@@ -1,0 +1,11 @@
+#!/bin/sh
+BASE_DIR=`dirname $0`
+CLOJURE_JAR=$BASE_DIR/clojure.jar
+SWT_JAR=$BASE_DIR/swt-3.4-mac.jar
+exec java \
+  -XstartOnFirstThread \
+  -classpath $BASE_DIR:$CLOJURE_JAR:$SWT_JAR \
+  -Djava.library.path=$BASE_DIR/swt-3.4-mac \
+  clojure.lang.Script \
+  $BASE_DIR/ajure/start.clj \
+  "$@"
