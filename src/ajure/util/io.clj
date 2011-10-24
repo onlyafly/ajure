@@ -13,21 +13,35 @@
   (:require (ajure.util [text-format :as text-format]))
   (:use ajure.util.other))
 
-;; Returns contents and charset name of text file
+;; Issues:
+;;  - Note that the .map method of channel remains mapped to memory
+;;    even after the channel is closed.
+;;    http://bugs.sun.com/view_bug.do?bug_id=4724038
+(defn create-byte-buffer-from-channel-1 [#^FileChannel channel]
+  (.map channel (. FileChannel$MapMode READ_ONLY)
+        0 (.size channel)))
+
+(defn create-byte-buffer-from-channel-2 [#^FileChannel channel]
+  (let [size (int (.size channel))
+        buffer (. ByteBuffer allocate size)]
+    (.read channel buffer)
+    (.rewind buffer)
+    buffer))
+
+;; Returns contents and charset name of text file.
 (defn read-content-and-charset-of-text-file [file]
   (let [stream (FileInputStream. file)
         builder (StringBuilder.)]
     (try
       (let [#^FileChannel channel (.getChannel stream)
-            #^ByteBuffer buffer (.map channel (. FileChannel$MapMode READ_ONLY)
-                                      0 (.size channel))
+            #^ByteBuffer buffer (create-byte-buffer-from-channel-2 channel)
             #^Charset charset (text-format/guess-charset buffer)
             #^CharBuffer decoded-buffer (.decode charset buffer)
             result (str decoded-buffer)]
         (.append builder result)
         [(str builder) (.name charset)])
       (finally
-        (.close stream)))))
+       (.close stream)))))
 
 ;; Returns contents of text file only
 (defn read-text-file [file]

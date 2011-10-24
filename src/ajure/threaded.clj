@@ -7,6 +7,9 @@
 
 ;;---------- Repl debugging support
 
+;; How to use:
+;; - From the REPL, execute (require 'ajure.threaded)
+;; - Execute (ajure.threaded/thread-gui)
 (defn thread-gui []
   "Launch GUI interface in a thread to enable repl debugging"
   (let [thread (Thread. start-gui)]
