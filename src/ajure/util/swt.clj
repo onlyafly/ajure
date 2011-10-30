@@ -141,12 +141,27 @@
                 2))]
     (.setLocation shell x y)))
 
+(defn event->mask-and-char-vector [event]
+  (let [mask (int (. event stateMask))
+        
+        ; The keyCode field can be an integer corresponding to a
+        ; character or an SWT constant, so need to test that it is a
+        ; character before converting to char.
+        keycode (. event keyCode)
+        is-keycode-valid (and (>= keycode (int Character/MIN_VALUE))
+                              (<= keycode (int Character/MAX_VALUE)))
+        
+        actual-char (if is-keycode-valid
+                      (char keycode)
+                      (. event character))]
+    
+    [mask actual-char]))
+
 ;TODO optimize this function to improve performance of entering text
 (defn key-combo? [#^VerifyEvent event
                   modifier-vector
                   expected-char]
-  (let [mask (int (. event stateMask))
-        actual-char (char (. event keyCode))
+  (let [[mask actual-char] (event->mask-and-char-vector event)
         is-matched-char (= expected-char actual-char)
         mapped-mask (map #(bit-and mask %) modifier-vector)
         is-matched-mask (every? #(not= 0 %) mapped-mask)]
@@ -158,11 +173,12 @@
   mappings example:
   {[[SWT/MOD1] \\o] action1
    [[SWT/MOD2] \\a] action2}"
-  ;TODO had to remove #^VerifyEvent from event since if is passed an Event
-  ; from main/application-key-down-action
+  
+  ; Cannot annotate event as a #^VerifyEvent or a #^Event since it can
+  ; be either one as passed from main/application-key-down-action
   [event mappings match-found-action]
-  (let [mask (int (. event stateMask))
-        actual-char (char (. event keyCode))]
+  
+  (let [[mask actual-char] (event->mask-and-char-vector event)]
     (loop [remaining-mappings mappings]
       (if remaining-mappings
         (let [[[mod-vector expected-char] action] (first remaining-mappings)
