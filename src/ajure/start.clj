@@ -2,6 +2,6 @@
 
 (ns ajure.start
   (:require (ajure [default-modules :as default-modules])
-            (ajure.core [main :as main])))
+            (ajure.core [init :as init])))
 
-(main/launch-gui default-modules/init)
+(init/launch-gui default-modules/init)

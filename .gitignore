@@ -1,4 +1,6 @@
 pom.xml
 /classes/
+/lib/
+ajure-*.jar
 .lein-failures
 .lein-deps-sum

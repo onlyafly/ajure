@@ -1,6 +1,6 @@
-;; ajure.core.main
+;; ajure.core.init
 
-(ns ajure.core.main
+(ns ajure.core.init
   (:import (org.eclipse.swt SWT))
   (:require (ajure.core [settings :as settings]
                         [file-utils :as file]
