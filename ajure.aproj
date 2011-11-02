@@ -1,0 +1,7 @@
+;; Ajure project file, version: 0.4.1-dev
+;; Automatically generated file.  Modify with care.
+
+(clojure.core/use (quote ajure.core.project))
+
+(ajure.core.project/add-paths-to-project ["C:\\Users\\Kevin\\code\\ajure\\src\\ajure"])
+(clojure.core/dosync (clojure.core/ref-set ajure.core.project/project-file-name "C:\\Users\\Kevin\\code\\ajure\\ajure.aproj") (clojure.core/ref-set ajure.core.project/is-project-modified false))

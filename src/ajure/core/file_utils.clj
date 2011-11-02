@@ -14,7 +14,7 @@
 ;;---------- Error logging
 
 (def error-log-file-path
-  (str platform/home-dir platform/file-separator "ajure_errors.txt"))
+  (str platform/home-dir platform/file-separator "ajure-errors.txt"))
 
 (defn log-exception [ex]
   (let [trace-vec (vec (.getStackTrace ex))

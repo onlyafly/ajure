@@ -33,7 +33,7 @@
 
 ;; Called immediately before program closes
 (defn on-program-closing []
-  (settings/save-current-settings))
+  (settings/save-settings))
 
 ;; Program exit point, called by Exit menu item
 (defn do-exit []

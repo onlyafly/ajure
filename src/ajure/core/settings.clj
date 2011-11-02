@@ -17,7 +17,7 @@
 
 (def stored-settings-file-path (str platform/home-dir
                                     platform/file-separator
-                                    "ajure.settings.clj"))
+                                    "ajure-settings.clj"))
 
 (defn load-settings []
   (io/create-empty-file-unless-exists stored-settings-file-path)
@@ -37,8 +37,3 @@
         (pr (key pair) (val pair))
         (println))
       (println "}"))))
-
-;;FIXME old------------
-
-(defn save-current-settings []
-  (save-settings))
