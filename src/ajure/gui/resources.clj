@@ -9,8 +9,13 @@
 
 (def images (ref {}))
 
-(defn resource-file-path [file-name]
-  (.getFile (clojure.java.io/resource file-name)))
+(defn create-image-from-resource-file-name
+  "This allows images to be created from resources. The image is not
+  created directly from the file so that it will work from JAR files,
+  as well."
+  [display file-name]
+  (let [inputStream (ClassLoader/getSystemResourceAsStream file-name)]
+    (Image. display inputStream)))
 
 ;;TODO temporary
 (defn create-icon-image [display]
@@ -22,13 +27,11 @@
       (.dispose))
     image))
 
-;;TODO removed due to unable to find file errors on Mac
 (defn allocate-images [display]
   (dosync
    (commute images assoc
-            :logo (Image. display (resource-file-path "logo.png")))))
+            :logo (create-image-from-resource-file-name display "logo.png"))))
 
-;;TODO removed due to unable to find file errors on Mac
 (defn release-images []
   (.dispose (@images :logo)))
 

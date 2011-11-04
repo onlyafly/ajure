@@ -1,4 +1,6 @@
-;TODO document the public API
+;; ajure.public
+;;
+;; Simple public API.
 
 (ns ajure.public
   (:import (org.eclipse.swt SWT)

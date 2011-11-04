@@ -1,0 +1,1 @@
+start /B javaw -jar ajure.jar

@@ -1,4 +1,6 @@
 ;; ajure.main
+;;
+;; The main entry point of the application.
 
 (ns ajure.main
   (:require (ajure [default-modules :as default-modules])

@@ -6,6 +6,9 @@
   ;; they are not in Clojars
   :disable-implicit-clean true
 
+  ;; Where to put the JARs
+  :target-dir "bin"
+  
   :dev-dependencies
   [
    ;; Documentation generator, call using `lein marg`

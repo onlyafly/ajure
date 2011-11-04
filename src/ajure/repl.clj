@@ -1,11 +1,28 @@
-(ns ajure.threaded
+;; ajure.repl
+;;
+;; Allows the application to be executed and debugged from the REPL.
+;;
+;; How to use:
+;;
+;;  - From the REPL, enter the following to load this namespace:
+;;    (use 'ajure.repl)
+;;
+;;  - To launch the GUI:
+;;    (start-gui)
+;;
+;;  - To debug the GUI by launching it in a separate thread:
+;;    (thread-gui)
+
+(ns ajure.repl
   (:require (ajure [default-modules :as default-modules])
             (ajure.core [init :as init])))
+
+;;---------- REPL launch support
 
 (defn start-gui []
   (init/launch-gui default-modules/init))
 
-;;---------- Repl debugging support
+;;---------- REPL debugging support
 
 ;; How to use:
 ;; - From the REPL, execute (require 'ajure.threaded)
