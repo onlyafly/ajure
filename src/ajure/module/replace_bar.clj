@@ -199,7 +199,7 @@
            (on-replace-attempt)))))
 
     (doto done-button
-      (.setText "Done")
+      (.setText "Close")
       (.addSelectionListener
        (proxy [SelectionAdapter] []
          (widgetSelected [event]

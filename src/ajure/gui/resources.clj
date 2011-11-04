@@ -2,24 +2,35 @@
 
 (ns ajure.gui.resources
   (:import (org.eclipse.swt SWT)
-           (org.eclipse.swt.graphics Color Image FontData))
+           (org.eclipse.swt.graphics Color Image FontData GC))
   (:require (ajure.gui [fonts :as fonts])))
 
 ;;---------- Images
 
 (def images (ref {}))
 
+(defn resource-file-path [file-name]
+  (.getFile (clojure.java.io/resource file-name)))
+
+;;TODO temporary
+(defn create-icon-image [display]
+  (let [image (Image. display 32 32)
+        gc (GC. image)]
+    (doto gc
+      (.setBackground (.getSystemColor display SWT/COLOR_RED))
+      (.fillArc 0 0 32 32 45 270)
+      (.dispose))
+    image))
+
 ;;TODO removed due to unable to find file errors on Mac
 (defn allocate-images [display]
-  (comment
-    (dosync
-     (commute images assoc
-              :logo (Image. display "logo.png")))))
+  (dosync
+   (commute images assoc
+            :logo (Image. display (resource-file-path "logo.png")))))
 
 ;;TODO removed due to unable to find file errors on Mac
 (defn release-images []
-  (comment
-    (.dispose (@images :logo))))
+  (.dispose (@images :logo)))
 
 ;;---------- Colors
 

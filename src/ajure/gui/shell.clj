@@ -4,7 +4,8 @@
   (:import (org.eclipse.swt SWT)
            (org.eclipse.swt.widgets Shell)
            (org.eclipse.swt.layout GridLayout GridData)
-           (org.eclipse.swt.events ShellAdapter))
+           (org.eclipse.swt.events ShellAdapter)
+           (org.eclipse.swt.graphics Image GC))
   (:require (ajure.gui [application :as application]
                        [hooks :as hooks]
                        [info-dialogs :as info-dialogs]
@@ -70,7 +71,7 @@
       (doto shell
         (.setText info/application-name)
 
-        ;;TODO (.setImage (@resources/images :logo))
+        (.setImage (@resources/images :logo))
 
         ;; Program exit point
         ;; This is called when the shell is closed using the X at the top
