@@ -1,4 +1,4 @@
-# Ajure Version History
+# Ajure Version History / Changelog
 
 _These are the notes for each release._
 
