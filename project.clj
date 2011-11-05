@@ -1,4 +1,4 @@
-(defproject ajure "0.4.1-dev"
+(defproject ajure "0.5"
   :description "Ajure Text Editor"
   :dependencies [[org.clojure/clojure "1.3.0"]]
 

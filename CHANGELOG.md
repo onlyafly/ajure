@@ -2,6 +2,48 @@
 
 _These are the notes for each release._
 
+## Planned for Version 0.5
+
+* Release Date: 2011-11-05
+* Version Goal: Customization and scripting improvements.
+
+Windows OS Integration
+
+* Icon
+* Easy installation and usage on Windows
+
+User Interface
+
+* File Menu
+ * List of recent files and projects
+* Text Menu
+ * Change selected text to lower or upper case
+
+Customization Support for User Scripts
+
+* Menus
+* Key combos
+
+Configurations
+
+* Configurations auto-saved when program closes
+* Remove "Save Current Configurations" menu item
+* "Configure" menu now called "Settings"
+
+Module Support
+
+* Refactor code to make future GUI components more modular
+* Modules
+ * Find/Replace Bar
+
+Bugs Fixed
+
+* Paste keyboard shortcut performed the action twice
+
+Technical
+
+* Settings file renamed and stores settings as a map.
+
 ## Version 0.4
 
 * Release Date: March 1, 2009
