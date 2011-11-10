@@ -13,7 +13,8 @@
                   text-modified-action
                   text-box-verify-key-action
                   text-box-change-action
-                  dropped-file-paths-action]
+                  dropped-file-paths-action
+                  get-style-range-functions]
   (let [shell @hooks/shell
         display @hooks/display
         tab-folder @hooks/tab-folder
@@ -25,7 +26,8 @@
             text-modified-action
             text-box-verify-key-action
             text-box-change-action
-            dropped-file-paths-action)]
+            dropped-file-paths-action
+            get-style-range-functions)]
     (doto tab-canvas
       (.setLayout (FillLayout.)))
     (doto tab-item

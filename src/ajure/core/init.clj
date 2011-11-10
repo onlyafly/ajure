@@ -191,7 +191,7 @@
         "<" file/error-log-file-path ">"))
   (file/log-exception exception)
   ;;FIXME remove throws before deployment so that exceptions are caught
-  ;;(throw exception)
+  (throw exception)
   )
 
 (defn launch-gui [modules-init-action]
@@ -223,5 +223,5 @@
     (catch Exception exc
       (file/log-exception exc)
       ;;FIXME remove throws before deployment so that exceptions are caught
-      ;;(throw exc)
+      (throw exc)
       )))

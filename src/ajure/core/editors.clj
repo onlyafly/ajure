@@ -43,3 +43,4 @@
                size)
       (let [font-data (FontData. name size (swt/options NORMAL))]
         (set-editor-font-data font-data)))))
+

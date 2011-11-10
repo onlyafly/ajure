@@ -78,6 +78,19 @@
     (handleEvent [event]
       (redraw-line-numbering line-numbering))))
 
+;;---------- Line styles
+
+(defn- create-line-style-listener [get-style-range-functions]
+  (proxy [LineStyleListener] []
+    (lineGetStyle [#^LineStyleEvent event]
+      (let [style-range-funcs (get-style-range-functions)
+            line (. event lineText)
+            line-offset (. event lineOffset)
+            style-range-lists (map #(% line line-offset) style-range-funcs)
+            style-ranges (apply concat style-range-lists)
+            style-range-array (into-array StyleRange style-ranges)]
+        (set! (. event styles) style-range-array)))))
+
 ;;---------- Text Editor
 
 (defn attach-popup-menu [text-box]
@@ -110,7 +123,8 @@
                           text-modified-action
                           verify-key-action
                           text-change-action
-                          dropped-file-paths-action]
+                          dropped-file-paths-action
+                          get-style-range-functions]
   (let [margin-canvas (Canvas. parent SWT/NONE)
         text-box (StyledText. margin-canvas (swt/options V_SCROLL H_SCROLL))
         numbering (create-line-numbering display margin-canvas text-box)
@@ -149,7 +163,9 @@
       (.setKeyBinding (bit-or-many SWT/MOD1 (int \v)) SWT/NULL)
 
       (.addExtendedModifyListener
-        (create-extended-modify-listener text-change-action))
+       (create-extended-modify-listener text-change-action))
+      (.addLineStyleListener
+       (create-line-style-listener get-style-range-functions))
       (.addVerifyKeyListener
         (proxy [VerifyKeyListener] []
           (verifyKey [event]

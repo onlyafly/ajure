@@ -7,7 +7,7 @@
   :textbox :numbering :canvas
   :docname :filepath  :directory
   :modified :undostack :redostack
-  :endings :charset)
+  :endings :charset :style-range-function-map)
 
 (def current (ref nil))
 (def creation-actions (ref {}))
@@ -22,8 +22,12 @@
     (ref-set current d)))
 
 (defn this [key]
-  (@@current key))
+  ; Check if current has not been set yet.
+  (if (= @current nil)
+    nil
+    (@@current key)))
 
+;; FIXME make what can be private so
 (def document-number (ref 1))
 
 (defn get-unique-name []
@@ -39,7 +43,9 @@
                     textbox numbering canvas
                     document-name nil nil
                     false (ref []) (ref [])
-                    text-format/line-ending-default "UTF-8")]
+                    text-format/line-ending-default "UTF-8"
+                    (ref {}))]
+    (println "make blank doc" document-name)
     (doseq [action (vals @creation-actions)]
       (action doc))
     doc))
@@ -51,7 +57,9 @@
                     textbox numbering canvas
                     document-name file-name file-directory
                     false (ref []) (ref [])
-                    line-ending charset)]
+                    line-ending charset
+                    (ref {}))]
+    (println "make doc" document-name)
     (doseq [action (vals @creation-actions)]
       (action doc))
     doc))

@@ -67,6 +67,16 @@
     (doseq [textbox textboxes]
       (action textbox))))
 
+(defn- get-all-document-datas []
+  (let [tabs (tab-folder/all-tabs)
+        document-datas (map #(deref (.getData %)) tabs)]
+    document-datas))
+
+(defn for-each-tab [action]
+  (let [document-datas (get-all-document-datas)]
+    (doseq [document-data document-datas]
+      (action document-data))))
+
 (defn tab-selected-action [selected-tab]
   (dosync
     (ref-set document/current (.getData selected-tab)))
@@ -111,13 +121,20 @@
               (.dispose tab)
               (recur (next remaining-tabs)))))))))
 
+(defn- get-style-range-functions []
+  (let [style-range-function-map (document/this :style-range-function-map)]
+    (if style-range-function-map
+      (vals @style-range-function-map)
+      [])))
+
 (defn open-blank-file-in-new-tab []
   (let [doc-name (document/get-unique-name)
         [tab canvas text numbering] (tab/create-tab doc-name
                                                     #(set-modified-status true)
                                                     on-text-box-verify-key
                                                     on-text-box-change
-                                                    open-file-paths-in-tabs)
+                                                    open-file-paths-in-tabs
+                                                    get-style-range-functions)
         doc-data-ref (ref (document/make-blank-document text numbering
                                                         canvas doc-name))]
     (.setData tab doc-data-ref)
@@ -158,7 +175,8 @@
                                                               #(set-modified-status true)
                                                               on-text-box-verify-key
                                                               on-text-box-change
-                                                              open-file-paths-in-tabs)
+                                                              open-file-paths-in-tabs
+                                                              get-style-range-functions)
                   [dir name] (io/get-file-name-parts file-name)
                   content-line-endings (text-format/determine-line-endings content)
                   doc-data (ref (document/make-document text numbering

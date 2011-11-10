@@ -39,35 +39,27 @@
     (set! (. range background) (@resources/colors :yellow))
     range))
 
-(defn get-matching-style-ranges [line-string line-offset
-                                 search-string is-case-sensitive]
-  (let [[line search] (if is-case-sensitive
-                        [line-string search-string]
-                        [(.toLowerCase line-string) (.toLowerCase search-string)])]
-    (loop [offset 0 ranges []]
-      (let [result (.indexOf line search offset)]
-        (if (>= result 0)
-          (let [range (get-highlight-style-range (+ line-offset result) 
-                                                 (.length search))]
-            (recur (inc result) (conj ranges range)))
-          ranges)))))
-
-(def line-style-listener
-  (proxy [LineStyleListener] []
-    (lineGetStyle [#^LineStyleEvent event]
-      (let [search @find-text
-            is-case-sensitive @find-case-sensitive]
-        (if (and search
-                 (not (zero? (.length search))))
-          (do
-            (let [line (. event lineText)
-                  line-offset (. event lineOffset)
-                  styleRanges (get-matching-style-ranges line line-offset search
-                                                         is-case-sensitive)]
-              (set! (. event styles) (into-array StyleRange styleRanges))))
-          (do
-            (set! (. event styles) (make-array StyleRange 0))
-            ))))))
+(defn get-matching-style-ranges [line-string line-offset]
+  (let [search-string @find-text]
+    (if (and search-string
+             (not (zero? (.length search-string))))
+      
+      ; If there is a search, construct the style-ranges
+      (let [is-case-sensitive @find-case-sensitive
+            [line search] (if is-case-sensitive
+                            [line-string search-string]
+                            [(.toLowerCase line-string)
+                             (.toLowerCase search-string)])]
+        (loop [offset 0 ranges []]
+          (let [result (.indexOf line search offset)]
+            (if (>= result 0)
+              (let [range (get-highlight-style-range (+ line-offset result) 
+                                                     (.length search))]
+                (recur (inc result) (conj ranges range)))
+              ranges))))
+      
+      ; If there is no search, return and empty vector
+      [])))
 
 (defn get-index-of-next-with-wrapping [content-string search-string
                                        is-case-sensitive after-position]
@@ -111,12 +103,23 @@
                      (= current-selected-text @find-text))
             (.replaceTextRange textbox current-start find-length @replace-text)))))))
 
+(defn- init-highlighting []
+  (dosync
+   (commute (document/this :style-range-function-map)
+            assoc :replace-bar get-matching-style-ranges)))
+
+(defn- deinit-highlighting []
+  (dosync
+   (commute (document/this :style-range-function-map)
+            dissoc :replace-bar)))
+
 (defn on-find-attempt []
   (let [search-text (.getText @find-box-ref)
         is-case-sensitive (.getSelection @match-case-button-ref)]
     (dosync
      (ref-set find-text search-text)
-     (ref-set find-case-sensitive is-case-sensitive))
+     (ref-set find-case-sensitive is-case-sensitive)
+     (init-highlighting))
     (.redraw (document/this :textbox))
     (select-next-match is-case-sensitive)))
 
@@ -127,7 +130,8 @@
     (dosync
      (ref-set find-text local-find-text)
      (ref-set replace-text local-replace-text)
-     (ref-set find-case-sensitive is-case-sensitive))
+     (ref-set find-case-sensitive is-case-sensitive)
+     (init-highlighting))
     (.redraw (document/this :textbox))
     (replace-current-match is-case-sensitive)
     (select-next-match is-case-sensitive)))
@@ -241,10 +245,6 @@
 
     canvas))
 
-(defn document-creation-action [document-data]
-  (let [textbox (document-data :textbox)]
-    (.addLineStyleListener textbox line-style-listener)))
-
 (defn init []
   (let [find-bar (create-find-bar @hooks/shell
                                   "Enter text to find..."
@@ -255,9 +255,6 @@
                                ;; (set! (. data horizontalSpan) 2)
                                data)))
   (hide)
-  (document/add-creation-action :find-bar document-creation-action)
-  (tabs/for-each-textbox (fn [textbox]
-                           (.addLineStyleListener textbox line-style-listener)))
   (def-append-menu "Edit"
     (:cascade "Find/Replace"
               (:app-combo "Find/Replace Bar"
