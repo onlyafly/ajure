@@ -18,21 +18,21 @@
   (:use (ajure.gui [access :only (def-new-menu def-append-menu)])
         (ajure.util other)))
 
-(defn- get-highlight-style-range [begin len]
+(defn- get-keyword-style-range [begin len]
   (let [range (StyleRange.)]
     (set! (. range start) begin)
     (set! (. range length) len)
-    (set! (. range background) (@resources/colors :red))
+    (set! (. range foreground) (@resources/colors :red))
     range))
 
 (defn- get-matching-style-ranges [line-string line-offset]
   (let [line line-string
-        search "("]
+        search "keyword"]
     (loop [offset 0
            ranges []]
       (let [result (.indexOf line search offset)]
         (if (>= result 0)
-          (let [range (get-highlight-style-range (+ line-offset result) 
+          (let [range (get-keyword-style-range (+ line-offset result) 
                                                  (.length search))]
             (recur (inc result)
                    (conj ranges range)))
@@ -40,7 +40,6 @@
 
 (defn- document-creation-action [document-data]
   (let [style-range-function-map-ref (document-data :style-range-function-map)]
-    (println "document creation action: " (document-data :docname))
     (dosync
      (commute style-range-function-map-ref
               assoc :syntax-highlighting get-matching-style-ranges))))

@@ -1,5 +1,6 @@
 (ns ajure.core.recent
-  (:require (ajure.gui [hooks :as hooks])))
+  (:require (ajure.gui [hooks :as hooks])
+            (ajure.util [queue :as queue])))
 
 (defn- apply-in-map
   "Same as 'apply' but applies on the contents of a particular key on a
@@ -12,27 +13,17 @@
     false
     true))
 
-(defn- dequeue
-  "Dequeue an element from a vector, treating it as a queue."
-  [v]
-  (subvec v 1))
-
-(defn- enqueue
-  "Enqueue an element onto a possibly nil vector, treating it as a queue."
-  [v element]
-  (vec (conj v element)))
-
 (defn- add-recent-object [settings-key file-path]
   (when (object-not-recent? settings-key file-path)
     (dosync
      
      ;; Enqueue a new file path
-     (commute hooks/settings apply-in-map settings-key enqueue file-path)
+     (commute hooks/settings apply-in-map settings-key queue/enqueue file-path)
      
      (when (> (count (@hooks/settings settings-key)) 10)
        
        ;; Dequeue the oldest file-path
-       (commute hooks/settings apply-in-map settings-key dequeue)))))
+       (commute hooks/settings apply-in-map settings-key queue/dequeue)))))
 
 (defn- add-recent-objects [settings-key file-paths]
   (doseq [file-path file-paths]

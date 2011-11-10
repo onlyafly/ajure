@@ -2,7 +2,7 @@
 
 _These are the notes for each release._
 
-## Planned for Version 0.5
+## Version 0.5
 
 * Release Date: 2011-11-05
 * Version Goal: Customization and scripting improvements.
