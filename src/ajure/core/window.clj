@@ -6,7 +6,6 @@
 (ns ajure.core.window
   (:require (ajure.core [undo :as undo]
                         [scripts :as scripts]
-                        [document :as document]
                         [file-utils :as file]
                         [tabs :as tabs]
                         [project :as project]
@@ -14,7 +13,6 @@
                         [text :as text])
             (ajure.gui [access :as access]
                        [application :as application]
-                       [hooks :as hooks]
                        [info-dialogs :as info-dialogs]
                        [file-tree :as file-tree]
                        [file-dialogs :as file-dialogs]
@@ -24,6 +22,8 @@
                        [resources :as resources]
                        [shell :as shell]
                        [text-editor :as text-editor])
+			(ajure.state [document-state :as document-state]
+			             [hooks :as hooks])
             (ajure.util [platform :as platform]
                         [swt :as swt]
                         [other :as other]
@@ -35,20 +35,20 @@
        (project/verify-project-saved-then-close?)))
 
 (defn on-before-history-change []
-  (text-editor/pause-change-listening (document/this :textbox)))
+  (text-editor/pause-change-listening (document-state/this :textbox)))
 
 (defn on-after-history-change []
-  (text-editor/resume-change-listening (document/this :textbox)
+  (text-editor/resume-change-listening (document-state/this :textbox)
                                        tabs/on-text-box-change))
 
 (defn create-edit-popup-menu-items [parent-menu]
   (vector
    (swt/create-menu-item parent-menu "Undo"
-                         #(undo/do-undo (document/this :textbox)
+                         #(undo/do-undo (document-state/this :textbox)
                                         on-before-history-change
                                         on-after-history-change))
    (swt/create-menu-item parent-menu "Redo"
-                         #(undo/do-redo (document/this :textbox)
+                         #(undo/do-redo (document-state/this :textbox)
                                         on-before-history-change
                                         on-after-history-change))
    (swt/create-menu-separator parent-menu)

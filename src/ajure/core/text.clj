@@ -4,8 +4,8 @@
 
 (ns ajure.core.text
   (:import (org.eclipse.swt.custom ST))
-  (:require (ajure.core [document :as document]))
-  (:use (ajure.core [document :only (this)])
+  (:require (ajure.state [document-state :as document-state]))
+  (:use (ajure.state [document-state :only (this)])
         (ajure.gui [access :only (def-menu)])))
 
 ;; TODO there are many more actions in ST that can be used

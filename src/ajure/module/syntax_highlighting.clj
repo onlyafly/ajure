@@ -7,14 +7,14 @@
            (org.eclipse.swt.events SelectionAdapter KeyAdapter KeyEvent)
            (org.eclipse.swt.widgets Label Canvas Text Button)
            (org.eclipse.swt.layout GridLayout GridData))
-  (:require (ajure.core [document :as document]
-                        [tabs :as tabs])
+  (:require (ajure.core [tabs :as tabs])
             (ajure.gui [resources :as resources]
                        [status-bar :as status-bar]
                        [text-editor :as text-editor]
-                       [hooks :as hooks]
                        [search-text-box :as stb])
-            (ajure.util [swt :as swt]))
+            (ajure.state [document-state :as document-state]
+			             [hooks :as hooks])
+			(ajure.util [swt :as swt]))
   (:use (ajure.gui [access :only (def-new-menu def-append-menu)])
         (ajure.util other)))
 
@@ -45,5 +45,5 @@
               assoc :syntax-highlighting get-matching-style-ranges))))
 
 (defn init []
-  (document/add-creation-action :syntax-highlighting document-creation-action)
+  (document-state/add-creation-action :syntax-highlighting document-creation-action)
   (tabs/for-each-tab document-creation-action))

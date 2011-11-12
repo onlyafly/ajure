@@ -2,7 +2,7 @@
 
 (ns ajure.gui.info-dialogs
   (:import (org.eclipse.swt SWT))
-  (:require (ajure.gui [hooks :as hooks])
+  (:require (ajure.state [hooks :as hooks])
             (ajure.util [swt :as swt]
                         [info :as info])))
 

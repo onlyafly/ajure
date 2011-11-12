@@ -5,10 +5,10 @@
                         [recent :as recent])
             (ajure.gui [file-tree :as file-tree]
                        [file-dialogs :as file-dialogs]
-                       [hooks :as hooks]
                        [info-dialogs :as info-dialogs]
                        [status-bar :as status-bar]
                        [access :as access])
+			(ajure.state [hooks :as hooks])
             (ajure.util [io :as io]
                         [info :as info]
                         [platform :as platform]

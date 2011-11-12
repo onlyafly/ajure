@@ -3,7 +3,7 @@
 (ns ajure.gui.application
   (:import (org.eclipse.swt SWT)
            (org.eclipse.swt.widgets Event Display Listener))
-  (:require (ajure.gui [hooks :as hooks])
+  (:require (ajure.state [hooks :as hooks])
             (ajure.util [info :as info])))
 
 (defn create-display [close-action key-down-action]

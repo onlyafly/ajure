@@ -7,7 +7,6 @@
            (org.eclipse.swt.events ShellAdapter)
            (org.eclipse.swt.graphics Image GC))
   (:require (ajure.gui [application :as application]
-                       [hooks :as hooks]
                        [info-dialogs :as info-dialogs]
                        [file-tree :as file-tree]
                        [file-dialogs :as file-dialogs]
@@ -15,7 +14,8 @@
                        [status-bar :as status-bar]
                        [fonts :as fonts]
                        [resources :as resources])
-            (ajure.util [platform :as platform]
+            (ajure.state [hooks :as hooks])
+			(ajure.util [platform :as platform]
                         [swt :as swt]
                         [other :as other]
                         [info :as info])))

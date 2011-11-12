@@ -4,7 +4,7 @@
 ;;  - Store key-combo mappings, menu-items, and menu-item accelerators
 
 (ns ajure.gui.access
-  (:require (ajure.gui [hooks :as hooks])
+  (:require (ajure.state [hooks :as hooks])
             (ajure.util [swt :as swt])))
 
 (def editor-key-combos (ref {}))

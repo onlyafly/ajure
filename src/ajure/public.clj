@@ -13,8 +13,8 @@
                         [tabs :as tabs]
                         [recent :as recent]
                         [project :as project])
-            (ajure.gui [hooks :as hooks]
-                       [status-bar :as status-bar])
+            (ajure.gui [status-bar :as status-bar])
+			(ajure.state [hooks :as hooks])
             (ajure.util [swt :as swt]
                         [info :as info])))
 

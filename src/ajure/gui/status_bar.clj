@@ -4,7 +4,7 @@
   (:import (org.eclipse.swt SWT)
            (org.eclipse.swt.widgets Label Canvas)
            (org.eclipse.swt.layout GridLayout GridData))
-  (:require (ajure.gui [hooks :as hooks])))
+  (:require (ajure.state [hooks :as hooks])))
 
 ;;---------- Status Labels
 

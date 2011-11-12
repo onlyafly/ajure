@@ -9,7 +9,7 @@
            (org.eclipse.swt.graphics Point)
            (org.eclipse.swt.events TreeListener SelectionAdapter MouseAdapter)
            (org.eclipse.swt.widgets Tree TreeItem TreeColumn))
-  (:require (ajure.gui [hooks :as hooks])
+  (:require (ajure.state [hooks :as hooks])
             (ajure.util [io :as io])))
 
 (defn show-file-tree [show]

@@ -6,7 +6,7 @@
 (ns ajure.gui.file-dialogs
   (:import (org.eclipse.swt SWT)
            (org.eclipse.swt.widgets FileDialog DirectoryDialog))
-  (:use (ajure.gui [hooks :as hooks])
+  (:use (ajure.state [hooks :as hooks])
         (ajure.util [platform :as platform]))) 
 
 (defn open-dialog

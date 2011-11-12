@@ -5,12 +5,10 @@
 
 (ns ajure.core.tabs
   (:require (ajure.core [undo :as undo]
-                        [document :as document]
                         [file-utils :as file]
                         [scripts :as scripts]
                         [recent :as recent])
-            (ajure.gui [hooks :as hooks]
-                       [file-dialogs :as file-dialogs]
+            (ajure.gui [file-dialogs :as file-dialogs]
                        [resources :as resources]
                        [info-dialogs :as info-dialogs]
                        [status-bar :as status-bar]
@@ -18,6 +16,8 @@
                        [tab :as tab]
                        [tab-folder :as tab-folder]
                        [access :as access])
+			(ajure.state [document-state :as document-state]
+			             [hooks :as hooks])
             (ajure.util [platform :as platform]
                         [swt :as swt]
                         [io :as io]
@@ -79,8 +79,8 @@
 
 (defn tab-selected-action [selected-tab]
   (dosync
-    (ref-set document/current (.getData selected-tab)))
-  (.setFocus (document/this :textbox))
+    (ref-set document-state/current (.getData selected-tab)))
+  (.setFocus (document-state/this :textbox))
   (update-tab-status selected-tab))
 
 (defn select-tab-with-file-path [file-path]
@@ -97,7 +97,7 @@
 (defn on-text-box-change [old-text start length]
   (let [new-text (if (zero? length)
                    ""
-                   (.getTextRange (document/this :textbox) start length))]
+                   (.getTextRange (document-state/this :textbox) start length))]
     (undo/add-change old-text new-text start length)))
 
 (defn on-text-box-verify-key [event]    
@@ -122,24 +122,24 @@
               (recur (next remaining-tabs)))))))))
 
 (defn- get-style-range-functions []
-  (let [style-range-function-map (document/this :style-range-function-map)]
+  (let [style-range-function-map (document-state/this :style-range-function-map)]
     (if style-range-function-map
       (vals @style-range-function-map)
       [])))
 
 (defn open-blank-file-in-new-tab []
-  (let [doc-name (document/get-unique-name)
+  (let [doc-name (document-state/get-unique-name)
         [tab canvas text numbering] (tab/create-tab doc-name
                                                     #(set-modified-status true)
                                                     on-text-box-verify-key
                                                     on-text-box-change
                                                     open-file-paths-in-tabs
                                                     get-style-range-functions)
-        doc-data-ref (ref (document/make-blank-document text numbering
+        doc-data-ref (ref (document-state/make-blank-document text numbering
                                                         canvas doc-name))]
     (.setData tab doc-data-ref)
     (.setFocus text)
-    (document/set-current doc-data-ref)
+    (document-state/set-current doc-data-ref)
     (update-tab-status tab)))
 
 (defn file-already-open? [file-path]
@@ -179,14 +179,14 @@
                                                               get-style-range-functions)
                   [dir name] (io/get-file-name-parts file-name)
                   content-line-endings (text-format/determine-line-endings content)
-                  doc-data (ref (document/make-document text numbering
+                  doc-data (ref (document-state/make-document text numbering
                                                         canvas name
                                                         file-name dir
                                                         content-line-endings
                                                         charset))]
               (.setData tab doc-data)
               (.setFocus text)
-              (document/set-current doc-data)
+              (document-state/set-current doc-data)
               (update-tab-status tab)
 
               (recent/add-recent-file file-name)
@@ -215,7 +215,7 @@
   (open-blank-file-in-new-tab))
 
 (defn do-open []
-  (let [file-name (file-dialogs/open-dialog "Open" (document/this :directory))]
+  (let [file-name (file-dialogs/open-dialog "Open" (document-state/this :directory))]
     (open-file-in-new-tab file-name)))
 
 (defn do-save-as
@@ -306,7 +306,7 @@
     (action)))
 
 (defn verify-current-tab-saved-before-action [action]
-  (if (document/this :modified)
+  (if (document-state/this :modified)
     (info-dialogs/confirm-action "Warning" "Do you want to save the current document?"
                            do-save
                            action

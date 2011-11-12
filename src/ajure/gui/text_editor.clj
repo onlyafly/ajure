@@ -10,8 +10,8 @@
                                    MenuDetectListener SelectionListener)
            (org.eclipse.swt.layout FormLayout FormData FormAttachment)
            (org.eclipse.swt.graphics GC Font Point Image))
-  (:require (ajure.gui [hooks :as hooks]
-                       [resources :as resources])
+  (:require (ajure.gui [resources :as resources])
+			(ajure.state [hooks :as hooks])
             (ajure.util [swt :as swt]))
   (:use ajure.util.other))
 

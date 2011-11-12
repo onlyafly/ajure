@@ -1,5 +1,5 @@
 (ns ajure.core.recent
-  (:require (ajure.gui [hooks :as hooks])
+  (:require (ajure.state [hooks :as hooks])
             (ajure.util [queue :as queue])))
 
 (defn- apply-in-map

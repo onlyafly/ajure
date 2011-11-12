@@ -15,7 +15,8 @@
 
 (ns ajure.repl
   (:require (ajure [default-modules :as default-modules])
-            (ajure.core [init :as init])))
+            (ajure.core [init :as init])
+			(ajure.state [hooks :as hooks])))
 
 ;;---------- REPL launch support
 

@@ -9,7 +9,7 @@
 ;;  - Interface with GUI components at all
 
 (ns ajure.core.settings
-  (:require (ajure.gui [hooks :as hooks])
+  (:require (ajure.state [hooks :as hooks])
             (ajure.util [io :as io]
                         [info :as info]
                         [platform :as platform]))

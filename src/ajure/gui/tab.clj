@@ -4,10 +4,10 @@
   (:import (org.eclipse.swt.widgets Canvas)
            (org.eclipse.swt.custom CTabItem)
            (org.eclipse.swt.layout FillLayout))
-  (:require (ajure.gui [hooks :as hooks]
-                       [status-bar :as status-bar]
+  (:require (ajure.gui [status-bar :as status-bar]
                        [text-editor :as text-editor])
-            (ajure.util [swt :as swt])))
+            (ajure.state [hooks :as hooks])
+			(ajure.util [swt :as swt])))
 
 (defn create-tab [title
                   text-modified-action

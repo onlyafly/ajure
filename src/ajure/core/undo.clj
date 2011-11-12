@@ -1,20 +1,20 @@
 ;; ajure.core.undo
 
 (ns ajure.core.undo
-  (:require (ajure.core [document :as document])
+  (:require (ajure.state [document-state :as document-state])
             (ajure.gui [text-editor :as text-editor])))
 
 (defn add-change [a b pos len]
   (dosync
-    (commute (document/this :undostack) conj {:a a :b b :pos pos :len len})
+    (commute (document-state/this :undostack) conj {:a a :b b :pos pos :len len})
 
     ;; Clear the redo stack when a change occurs
-    (ref-set (document/this :redostack) [])))
+    (ref-set (document-state/this :redostack) [])))
 
 (defn do-redo [text-box
                before-change-action
                after-change-action]
-  (let [change (last @(document/this :redostack))]
+  (let [change (last @(document-state/this :redostack))]
     (when change
 
       (before-change-action)
@@ -39,13 +39,13 @@
       (after-change-action)
 
       (dosync
-       (commute (document/this :undostack) conj change)
-       (commute (document/this :redostack) pop)))))
+       (commute (document-state/this :undostack) conj change)
+       (commute (document-state/this :redostack) pop)))))
 
 (defn do-undo [text-box
                before-change-action
                after-change-action]
-  (let [change (last @(document/this :undostack))]
+  (let [change (last @(document-state/this :undostack))]
     (when change
 
       (before-change-action)
@@ -69,5 +69,5 @@
       (after-change-action)
 
       (dosync
-        (commute (document/this :redostack) conj change)
-        (commute (document/this :undostack) pop)))))
+        (commute (document-state/this :redostack) conj change)
+        (commute (document-state/this :undostack) pop)))))

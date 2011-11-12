@@ -5,7 +5,7 @@
 (ns ajure.gui.fonts
   (:import (org.eclipse.swt SWT)
            (org.eclipse.swt.graphics Font FontData))
-  (:require (ajure.gui [hooks :as hooks])))
+  (:require (ajure.state [hooks :as hooks])))
 
 (defn get-name-and-height [#^FontData font-data]
   (vector (.getName font-data)

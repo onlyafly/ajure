@@ -2,8 +2,8 @@
   (:import (org.eclipse.swt SWT)
            (org.eclipse.swt.custom CTabFolder CTabFolder2Adapter)
            (org.eclipse.swt.events SelectionAdapter))
-  (:require (ajure.gui [hooks :as hooks]
-                       [resources :as resources])
+  (:require (ajure.gui [resources :as resources])
+			(ajure.state [hooks :as hooks])
             (ajure.util [swt :as swt])))
 
 (defn current-tab []

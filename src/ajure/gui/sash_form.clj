@@ -2,9 +2,9 @@
   (:import (org.eclipse.swt SWT)
            (org.eclipse.swt.custom SashForm)
            (org.eclipse.swt.layout FillLayout))
-  (:require (ajure.gui [hooks :as hooks]
-                       [file-tree :as file-tree]
+  (:require (ajure.gui [file-tree :as file-tree]
                        [tab-folder :as tab-folder])
+			(ajure.state [hooks :as hooks])
             (ajure.util [other :as other])))
 
 (defn create-sash-form [parent

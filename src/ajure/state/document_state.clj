@@ -1,13 +1,5 @@
-;; ajure.core.document
-
-(ns ajure.core.document
-  (:require (ajure.util [text-format :as text-format])))
-
-(defstruct document-data-structure
-  :textbox :numbering :canvas
-  :docname :filepath  :directory
-  :modified :undostack :redostack
-  :endings :charset :style-range-function-map)
+(ns ajure.state.document-state
+  (:require (ajure.state [document :as document])))
 
 (def current (ref nil))
 (def creation-actions (ref {}))
@@ -39,13 +31,10 @@
     combined))
 
 (defn make-blank-document [textbox numbering canvas document-name]
-  (let [doc (struct document-data-structure
-                    textbox numbering canvas
-                    document-name nil nil
-                    false (ref []) (ref [])
-                    text-format/line-ending-default "UTF-8"
-                    (ref {}))]
-    (println "make blank doc" document-name)
+  (let [doc (document/create-blank-document textbox
+                                            numbering
+                                            canvas
+                                            document-name)]
     (doseq [action (vals @creation-actions)]
       (action doc))
     doc))
@@ -53,14 +42,14 @@
 (defn make-document [textbox numbering canvas document-name
                      file-name file-directory line-ending
                      charset]
-  (let [doc (struct document-data-structure
-                    textbox numbering canvas
-                    document-name file-name file-directory
-                    false (ref []) (ref [])
-                    line-ending charset
-                    (ref {}))]
-    (println "make doc" document-name)
+  (let [doc (document/create-document textbox
+                                      numbering
+                                      canvas
+                                      document-name
+                                      file-name
+                                      file-directory
+                                      line-ending
+                                      charset)]
     (doseq [action (vals @creation-actions)]
       (action doc))
     doc))
-

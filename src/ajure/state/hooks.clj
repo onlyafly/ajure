@@ -1,12 +1,9 @@
-;; ajure.gui.hooks
+;; hooks
 ;;
 ;; Should:
 ;;  - Variables to hold objects that need to be accessed globally
-;;
-;; Should not:
-;;  - Require anything in ajure.gui
 
-(ns ajure.gui.hooks
+(ns ajure.state.hooks
   (:require (ajure.util [platform :as platform])))
 
 ;;---------- Unique per application

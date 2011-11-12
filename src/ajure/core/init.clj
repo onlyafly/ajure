@@ -7,19 +7,19 @@
                         [window :as window]
                         [tabs :as tabs]
                         [undo :as undo]
-                        [document :as document]
                         [scripts :as scripts]
                         [project :as project]
                         [editors :as editors]
                         [text :as text])
             (ajure.gui [application :as application]
                        [fonts :as fonts]
-                       [hooks :as hooks]
                        [resources :as resources]
                        [status-bar :as status-bar]
                        [text-editor :as text-editor]
                        [info-dialogs :as info-dialogs]
                        [access :as access])
+			(ajure.state [document-state :as document-state]
+			             [hooks :as hooks])
             (ajure.util [swt :as swt]
                         [platform :as platform]
                         [text-format :as text-format]))
@@ -53,10 +53,10 @@
                                         (set! (. event type) SWT/None))))
 
 (defn on-before-history-change []
-  (text-editor/pause-change-listening (document/this :textbox)))
+  (text-editor/pause-change-listening (document-state/this :textbox)))
 
 (defn on-after-history-change []
-  (text-editor/resume-change-listening (document/this :textbox)
+  (text-editor/resume-change-listening (document-state/this :textbox)
                                        tabs/on-text-box-change))
 
 (defn toggle-word-wrap []
@@ -122,12 +122,12 @@
   (def-menu "Edit"
     (:editor-combo "Undo"
                    [MOD1] \z
-                   (undo/do-undo (document/this :textbox)
+                   (undo/do-undo (document-state/this :textbox)
                                  on-before-history-change
                                  on-after-history-change))
     (:editor-combo "Redo"
                    [SHIFT MOD1] \z
-                   (undo/do-redo (document/this :textbox)
+                   (undo/do-redo (document-state/this :textbox)
                                  on-before-history-change
                                  on-after-history-change))
     (:sep)

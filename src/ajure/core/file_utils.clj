@@ -1,11 +1,11 @@
 ;; ajure.core.file-utils
 
 (ns ajure.core.file-utils
-  (:require (ajure.core [settings :as settings]
-                        [document :as document])
-            (ajure.gui [hooks :as hooks]
-                       [file-dialogs :as file-dialogs]
+  (:require (ajure.core [settings :as settings])
+            (ajure.gui [file-dialogs :as file-dialogs]
                        [status-bar :as status-bar])
+			(ajure.state [document-state :as document-state]
+			             [hooks :as hooks])
             (ajure.util [io :as io]
                         [swt :as swt]
                         [platform :as platform]))
@@ -21,7 +21,7 @@
         trace-string (apply str (map #(str % "\n") trace-vec))]
     (io/append-text-file error-log-file-path
                          (str "CURRENT TIME: " (java.util.Date.) "\n"
-                              "CURRENT DOC: " @document/current "\n"
+                              "CURRENT DOC: " @document-state/current "\n"
                               "EXCEPTION: " ex "\n"
                               "MESSAGE: "(.getMessage ex) "\n"
                               "TRACE: " trace-string "\n"
