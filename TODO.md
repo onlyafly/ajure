@@ -2,6 +2,10 @@
 
 _As features are completed, they will be crossed out on this checklist._
 
+## Planned for Version 0.5.1
+
+* Refactoring.
+
 ## Planned for Version 0.6
 
 * Version Goal: Document type specific features.

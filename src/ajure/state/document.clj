@@ -15,8 +15,6 @@
   :charset
   :style-range-function-map)
 
-;TODO remove all refs from this structure
-
 (defn create-blank-document [textbox numbering canvas document-name]
   (struct document-struct
           textbox
@@ -26,25 +24,25 @@
           nil ;filepath
           nil ;directory
           false ;modified
-          (ref []) ;undostack
-          (ref []) ;redostack
+          [] ;undostack
+          [] ;redostack
           text-format/line-ending-default
           "UTF-8"
           {}))
 
 (defn create-document [textbox numbering canvas document-name
-                     file-name file-directory line-ending
+                     file-path file-directory line-ending
                      charset]
   (struct document-struct
           textbox
           numbering
           canvas
           document-name
-          file-name
+          file-path ;filepath
           file-directory
           false ;modified
-          (ref []) ;undostack
-          (ref []) ;redostack
+          [] ;undostack
+          [] ;redostack
           line-ending
           charset
           {}))

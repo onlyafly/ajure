@@ -98,7 +98,7 @@
   (let [new-text (if (zero? length)
                    ""
                    (.getTextRange (document-state/this :textbox) start length))]
-    (undo/add-change old-text new-text start length)))
+    (undo/do-text-change old-text new-text start length)))
 
 (defn on-text-box-verify-key [event]    
   (swt/execute-key-combo-in-mappings event

@@ -4,17 +4,38 @@
   (:require (ajure.state [document-state :as document-state])
             (ajure.gui [text-editor :as text-editor])))
 
-(defn add-change [a b pos len]
-  (dosync
-    (commute (document-state/this :undostack) conj {:a a :b b :pos pos :len len})
+(defn- update-for-redo [doc change]
+  (->
+   doc
+   (update-in [:undostack] conj change)
+   (update-in [:redostack] pop)))
 
-    ;; Clear the redo stack when a change occurs
-    (ref-set (document-state/this :redostack) [])))
+(defn- update-for-undo [doc change]
+  (->
+   doc
+   (update-in [:redostack] conj change)
+   (update-in [:undostack] pop)))
+
+(defn- update-for-change [doc change]
+  (->
+   doc
+   (update-in [:undostack] conj change)
+
+   ;; Clear the redo stack when a change occurs
+   (assoc :redostack [])))
+
+(defn do-text-change [a b pos len]
+  (dosync
+   (commute @document-state/current
+            update-for-change {:a a
+                               :b b
+                               :pos pos
+                               :len len})))
 
 (defn do-redo [text-box
                before-change-action
                after-change-action]
-  (let [change (last @(document-state/this :redostack))]
+  (let [change (last (document-state/this :redostack))]
     (when change
 
       (before-change-action)
@@ -39,13 +60,13 @@
       (after-change-action)
 
       (dosync
-       (commute (document-state/this :undostack) conj change)
-       (commute (document-state/this :redostack) pop)))))
+       (commute @document-state/current
+                update-for-redo change)))))
 
 (defn do-undo [text-box
                before-change-action
                after-change-action]
-  (let [change (last @(document-state/this :undostack))]
+  (let [change (last (document-state/this :undostack))]
     (when change
 
       (before-change-action)
@@ -69,5 +90,6 @@
       (after-change-action)
 
       (dosync
-        (commute (document-state/this :redostack) conj change)
-        (commute (document-state/this :undostack) pop)))))
+       (commute @document-state/current
+                update-for-undo change)))))
+
