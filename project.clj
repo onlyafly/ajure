@@ -1,6 +1,7 @@
-(defproject ajure "0.5"
+(defproject ajure "0.5.1-dev"
   :description "Ajure Text Editor"
-  :dependencies [[org.clojure/clojure "1.3.0"]]
+  :dependencies [[org.clojure/clojure "1.3.0"]
+                 [org.clojure/clojure-contrib "1.2.0"]]
 
   ;; Necessary to prevent Leiningen from deleting the SWT jars, since
   ;; they are not in Clojars

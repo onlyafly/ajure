@@ -39,10 +39,9 @@
           ranges)))))
 
 (defn- document-creation-action [document-data]
-  (let [style-range-function-map-ref (document-data :style-range-function-map)]
-    (dosync
-     (commute style-range-function-map-ref
-              assoc :syntax-highlighting get-matching-style-ranges))))
+  (dosync
+   (commute @document-state/current
+            assoc-in [:style-range-function-map :syntax-highlighting] get-matching-style-ranges)))
 
 (defn init []
   (document-state/add-creation-action :syntax-highlighting document-creation-action)

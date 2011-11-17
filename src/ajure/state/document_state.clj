@@ -13,6 +13,8 @@
   (dosync
     (ref-set current d)))
 
+;;TODO
+
 (defn this [key]
   ; Check if current has not been set yet.
   (if (= @current nil)

@@ -3,8 +3,9 @@ set BASE_DIR=C:\Users\Kevin\code\ajure
 set SRC_DIR=%BASE_DIR%\src
 set LIBS_DIR=%BASE_DIR%\lib
 set CLOJURE_JAR=%LIBS_DIR%\clojure-1.3.0.jar
+set CLOJURE_CONTRIB_JAR=%LIBS_DIR%\clojure-contrib-1.2.0.jar
 set JLINE_JAR=%LIBS_DIR%\jline-0.9.94.jar
 set SWT_JAR=%LIBS_DIR%\swt-win32-win32-x86_64-3.7.1-debug.jar
 set RES_DIR=%BASE_DIR%\resources
 
-java -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n -cp .;%SRC_DIR%;%JLINE_JAR%;%CLOJURE_JAR%;%SWT_JAR%;%RES_DIR% jline.ConsoleRunner clojure.main
+java -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n -cp .;%SRC_DIR%;%JLINE_JAR%;%CLOJURE_JAR%;%SWT_JAR%;%RES_DIR%;%CLOJURE_CONTRIB_JAR% jline.ConsoleRunner clojure.main

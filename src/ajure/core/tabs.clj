@@ -124,7 +124,7 @@
 (defn- get-style-range-functions []
   (let [style-range-function-map (document-state/this :style-range-function-map)]
     (if style-range-function-map
-      (vals @style-range-function-map)
+      (vals style-range-function-map)
       [])))
 
 (defn open-blank-file-in-new-tab []

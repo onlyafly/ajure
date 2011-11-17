@@ -15,7 +15,8 @@
             (ajure.state [document-state :as document-state]
 			             [hooks :as hooks])
 			(ajure.util [swt :as swt]))
-  (:use (ajure.gui [access :only (def-new-menu def-append-menu)])
+  (:use (clojure.contrib [core :only (dissoc-in)])
+        (ajure.gui [access :only (def-new-menu def-append-menu)])
         (ajure.util other)))
 
 (def bar (ref nil))
@@ -105,13 +106,13 @@
 
 (defn- init-highlighting []
   (dosync
-   (commute (document-state/this :style-range-function-map)
-            assoc :replace-bar get-matching-style-ranges)))
+   (commute @document-state/current
+            assoc-in [:style-range-function-map :replace-bar] get-matching-style-ranges)))
 
 (defn- deinit-highlighting []
-  (dosync
-   (commute (document-state/this :style-range-function-map)
-            dissoc :replace-bar)))
+(dosync
+   (commute @document-state/current
+            dissoc-in [:style-range-function-map :replace-bar])))
 
 (defn on-find-attempt []
   (let [search-text (.getText @find-box-ref)

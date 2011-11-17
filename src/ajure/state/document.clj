@@ -30,7 +30,7 @@
           (ref []) ;redostack
           text-format/line-ending-default
           "UTF-8"
-          (ref {})))
+          {}))
 
 (defn create-document [textbox numbering canvas document-name
                      file-name file-directory line-ending
@@ -47,4 +47,4 @@
           (ref []) ;redostack
           line-ending
           charset
-          (ref {})))
+          {}))
