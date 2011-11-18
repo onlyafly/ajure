@@ -21,12 +21,12 @@
   (.redraw line-numbering))
 
 ;; Optimized because it is called frequently
-(defn create-numbering-paint-listener [#^Display display
-                                       #^StyledText textbox
-                                       #^Canvas numbering]
-  (proxy [PaintListener] []
-    (paintControl [#^PaintEvent event]
-      (let [#^Point textbox-size (.getSize textbox)
+(defn create-numbering-paint-listener [^Display display
+                                       ^StyledText textbox
+                                       ^Canvas numbering]
+  (reify PaintListener
+    (paintControl [this event]
+      (let [^Point textbox-size (.getSize textbox)
             textbox-height (int (. textbox-size y))
             line-count (int (.getLineCount textbox))
             top-line-num (int (.getLineIndex textbox 0))
@@ -34,8 +34,8 @@
             event-y (int (. event y))
             event-width (int (. event width))
             event-height (int (. event height))
-            #^Image buffer (Image. display event-width event-height)
-            #^GC gc (GC. buffer)]
+            ^Image buffer (Image. display event-width event-height)
+            ^GC gc (GC. buffer)]
 
         (doto gc
           (.setFont (Font. display @hooks/editor-font-data))
@@ -67,22 +67,22 @@
     numbering))
 
 (defn create-scroll-selection-listener [line-numbering]
-  (proxy [SelectionListener] []
-    (widgetDefaultSelected [event]
+  (reify SelectionListener
+    (widgetDefaultSelected [this event]
       (redraw-line-numbering line-numbering))
-    (widgetSelected [event]
+    (widgetSelected [this event]
       (redraw-line-numbering line-numbering))))
 
 (defn create-scroll-listener [line-numbering]
-  (proxy [Listener] []
-    (handleEvent [event]
+  (reify Listener
+    (handleEvent [this event]
       (redraw-line-numbering line-numbering))))
 
 ;;---------- Line styles
 
 (defn- create-line-style-listener [get-style-range-functions]
-  (proxy [LineStyleListener] []
-    (lineGetStyle [#^LineStyleEvent event]
+  (reify LineStyleListener
+    (lineGetStyle [this event]
       (let [style-range-funcs (get-style-range-functions)
             line (. event lineText)
             line-offset (. event lineOffset)
@@ -95,15 +95,15 @@
 
 (defn attach-popup-menu [text-box]
   (.addMenuDetectListener text-box
-    (proxy [MenuDetectListener] []
-      (menuDetected [event]
+    (reify MenuDetectListener
+      (menuDetected [this event]
         (doto @hooks/popup-menu
           (.setLocation (. event x) (. event y))
           (.setVisible true))))))
 
 (defn create-extended-modify-listener [text-change-action]
-  (proxy [ExtendedModifyListener] []
-    (modifyText [event]
+  (reify ExtendedModifyListener
+    (modifyText [this event]
       (text-change-action (. event replacedText)
                           (. event start)
                           (. event length)))))
@@ -167,12 +167,12 @@
       (.addLineStyleListener
        (create-line-style-listener get-style-range-functions))
       (.addVerifyKeyListener
-        (proxy [VerifyKeyListener] []
-          (verifyKey [event]
+        (reify VerifyKeyListener
+          (verifyKey [this event]
             (verify-key-action event))))
       (.addModifyListener
-        (proxy [ModifyListener] []
-          (modifyText [modify-event]
+        (reify ModifyListener
+          (modifyText [this modify-event]
             (text-modified-action)))))
 
     (let [scroll-listener (create-scroll-listener numbering)

@@ -50,11 +50,11 @@
             (add-files-to-tree root files)))))))
 
 (def tree-listener
-     (proxy [TreeListener] []
-       (treeCollapsed [event]
+     (reify TreeListener
+       (treeCollapsed [this event]
          nil)
        ; Called when node is expanded by user
-       (treeExpanded [event]
+       (treeExpanded [this event]
          (on-tree-expanded (. event item)))))
 
 (defn toggle-expanded-state [tree-item]

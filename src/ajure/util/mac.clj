@@ -22,8 +22,8 @@
   (println "about clicked")
   OS/noErr)
 
-(defn hook-app-menu [#^org.eclipse.swt.widgets.Display display
-                     #^org.eclipse.swt.widgets.Shell shell]
+(defn hook-app-menu [^org.eclipse.swt.widgets.Display display
+                     ^org.eclipse.swt.widgets.Shell shell]
   (let [about-menu-item-name "About"
         target (proxy [Object] []
                  (commandProc [next-handler the-event user-data]

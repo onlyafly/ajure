@@ -16,8 +16,8 @@
                        [tab :as tab]
                        [tab-folder :as tab-folder]
                        [access :as access])
-			(ajure.state [document-state :as document-state]
-			             [hooks :as hooks])
+            (ajure.state [document-state :as document-state]
+                         [hooks :as hooks])
             (ajure.util [platform :as platform]
                         [swt :as swt]
                         [io :as io]

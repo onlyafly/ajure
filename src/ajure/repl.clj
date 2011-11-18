@@ -37,13 +37,13 @@
 ;; execute a command within the thread started above.
 (defmacro exec [& body]
   `(.syncExec (deref hooks/display)
-     (proxy [Runnable] []
-       (run []
+     (reify Runnable
+       (run [this]
             ~@body))))
 
 ;; Does the same as "exec" above, but also prints the result.
 (defmacro pexec [& body]
   `(.syncExec (deref hooks/display)
-     (proxy [Runnable] []
-       (run []
+     (reify Runnable
+       (run [this]
             (println ~@body)))))

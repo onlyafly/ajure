@@ -17,14 +17,14 @@
 
     ; This is called when app is closed with Command-Q in Mac or Alt+F4 in Windows
     (.addListener display SWT/Close
-      (proxy [Listener] []
-        (handleEvent [#^Event event]
+      (reify Listener
+        (handleEvent [this event]
           (close-action event))))
 
     ; Optimized because this is called before every key event in the application
     (.addFilter display SWT/KeyDown
-      (proxy [Listener] []
-        (handleEvent [#^Event event]
+      (reify Listener
+        (handleEvent [this event]
           (key-down-action event))))
 
     display))
