@@ -38,12 +38,10 @@
                    (conj ranges range)))
           ranges)))))
 
-(defn- document-creation-action [document-data]
-  (prn "dca")
-  (dosync
-   (commute @document-state/current
-            assoc-in [:style-range-function-map :syntax-highlighting] get-matching-style-ranges))
-  (prn document-state/current))
+(defn- document-creation-action [doc]
+  (assoc-in doc
+            [:style-range-function-map :syntax-highlighting]
+            get-matching-style-ranges))
 
 (defn init []
   (document-state/add-creation-action :syntax-highlighting document-creation-action)

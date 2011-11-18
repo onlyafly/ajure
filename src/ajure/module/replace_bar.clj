@@ -74,8 +74,8 @@
 
 (defn select-next-match [is-case-sensitive]
   (when (str-not-empty? @find-text)
-    (let [textbox (document-state/this :textbox)
-          numbering (document-state/this :numbering)
+    (let [textbox (document-state/current :textbox)
+          numbering (document-state/current :numbering)
           content (.getText textbox)
           [current-start current-end] (swt/point->vector (.getSelection textbox))
           next-start (get-index-of-next-with-wrapping content
@@ -93,7 +93,7 @@
 
 (defn replace-current-match [is-case-sensitive]
   (when (str-not-empty? @find-text)
-    (let [textbox (document-state/this :textbox)
+    (let [textbox (document-state/current :textbox)
           content (.getText textbox)
           [current-start current-end] (swt/point->vector (.getSelection textbox))
           current-selection-length (- current-end current-start)
@@ -106,13 +106,13 @@
 
 (defn- init-highlighting []
   (dosync
-   (commute @document-state/current
-            assoc-in [:style-range-function-map :replace-bar] get-matching-style-ranges)))
+   (commute document-state/docs
+            assoc-in [@document-state/current-doc-id :style-range-function-map :replace-bar] get-matching-style-ranges)))
 
 (defn- deinit-highlighting []
 (dosync
-   (commute @document-state/current
-            dissoc-in [:style-range-function-map :replace-bar])))
+   (commute document-state/docs
+            dissoc-in [@document-state/current-doc-id :style-range-function-map :replace-bar])))
 
 (defn on-find-attempt []
   (let [search-text (.getText @find-box-ref)
@@ -121,7 +121,7 @@
      (ref-set find-text search-text)
      (ref-set find-case-sensitive is-case-sensitive)
      (init-highlighting))
-    (.redraw (document-state/this :textbox))
+    (.redraw (document-state/current :textbox))
     (select-next-match is-case-sensitive)))
 
 (defn on-replace-attempt []
@@ -133,7 +133,7 @@
      (ref-set replace-text local-replace-text)
      (ref-set find-case-sensitive is-case-sensitive)
      (init-highlighting))
-    (.redraw (document-state/this :textbox))
+    (.redraw (document-state/current :textbox))
     (replace-current-match is-case-sensitive)
     (select-next-match is-case-sensitive)))
 
@@ -151,8 +151,8 @@
 (defn on-find-cancelled []
   (dosync
     (ref-set find-text ""))
-  (.redraw (document-state/this :textbox))
-  (.setFocus (document-state/this :textbox)))
+  (.redraw (document-state/current :textbox))
+  (.setFocus (document-state/current :textbox)))
 
 (defn on-escape-pressed []
   (swt/dynamically-hide-control @bar)

@@ -4,38 +4,35 @@
   (:require (ajure.state [document-state :as document-state])
             (ajure.gui [text-editor :as text-editor])))
 
-(defn- update-for-redo [doc change]
+(defn- update-for-redo [doc doc-id change]
   (->
    doc
-   (update-in [:undostack] conj change)
-   (update-in [:redostack] pop)))
+   (update-in [doc-id :undostack] conj change)
+   (update-in [doc-id :redostack] pop)))
 
-(defn- update-for-undo [doc change]
+(defn- update-for-undo [doc doc-id change]
   (->
    doc
-   (update-in [:redostack] conj change)
-   (update-in [:undostack] pop)))
+   (update-in [doc-id :redostack] conj change)
+   (update-in [doc-id :undostack] pop)))
 
-(defn- update-for-change [doc change]
+(defn- update-for-change [doc doc-id change]
   (->
    doc
-   (update-in [:undostack] conj change)
+   (update-in [doc-id :undostack] conj change)
 
    ;; Clear the redo stack when a change occurs
-   (assoc :redostack [])))
+   (assoc-in [doc-id :redostack] [])))
 
 (defn do-text-change [a b pos len]
   (dosync
-   (commute @document-state/current
-            update-for-change {:a a
-                               :b b
-                               :pos pos
-                               :len len})))
+   (commute document-state/docs
+            update-for-change @document-state/current-doc-id {:a a :b b :pos pos :len len})))
 
 (defn do-redo [text-box
                before-change-action
                after-change-action]
-  (let [change (last (document-state/this :redostack))]
+  (let [change (last (document-state/current :redostack))]
     (when change
 
       (before-change-action)
@@ -60,13 +57,13 @@
       (after-change-action)
 
       (dosync
-       (commute @document-state/current
-                update-for-redo change)))))
+       (commute document-state/docs
+                update-for-redo @document-state/current-doc-id change)))))
 
 (defn do-undo [text-box
                before-change-action
                after-change-action]
-  (let [change (last (document-state/this :undostack))]
+  (let [change (last (document-state/current :undostack))]
     (when change
 
       (before-change-action)
@@ -90,6 +87,6 @@
       (after-change-action)
 
       (dosync
-       (commute @document-state/current
-                update-for-undo change)))))
+       (commute document-state/docs
+                update-for-undo @document-state/current-doc-id change)))))
 

@@ -35,20 +35,20 @@
        (project/verify-project-saved-then-close?)))
 
 (defn on-before-history-change []
-  (text-editor/pause-change-listening (document-state/this :textbox)))
+  (text-editor/pause-change-listening (document-state/current :textbox)))
 
 (defn on-after-history-change []
-  (text-editor/resume-change-listening (document-state/this :textbox)
+  (text-editor/resume-change-listening (document-state/current :textbox)
                                        tabs/on-text-box-change))
 
 (defn create-edit-popup-menu-items [parent-menu]
   (vector
    (swt/create-menu-item parent-menu "Undo"
-                         #(undo/do-undo (document-state/this :textbox)
+                         #(undo/do-undo (document-state/current :textbox)
                                         on-before-history-change
                                         on-after-history-change))
    (swt/create-menu-item parent-menu "Redo"
-                         #(undo/do-redo (document-state/this :textbox)
+                         #(undo/do-redo (document-state/current :textbox)
                                         on-before-history-change
                                         on-after-history-change))
    (swt/create-menu-separator parent-menu)

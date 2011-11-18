@@ -21,7 +21,7 @@
         trace-string (apply str (map #(str % "\n") trace-vec))]
     (io/append-text-file error-log-file-path
                          (str "CURRENT TIME: " (java.util.Date.) "\n"
-                              "CURRENT DOC: " @document-state/current "\n"
+                              "CURRENT DOC: " (document-state/current) "\n"
                               "EXCEPTION: " ex "\n"
                               "MESSAGE: "(.getMessage ex) "\n"
                               "TRACE: " trace-string "\n"

@@ -36,15 +36,17 @@
   ([]
      (update-tab-text (tab-folder/current-tab)))
   ([tab-item]
-     (let [tab-data @(.getData tab-item)
-           doc-name (tab-data :docname)
-           modified-flag (if (tab-data :modified) "* " "")]
+     (let [doc-id (.getData tab-item)
+	       doc (@document-state/docs doc-id)
+           doc-name (doc :docname)
+           modified-flag (if (doc :modified) "* " "")]
        (.setText tab-item (str modified-flag doc-name)))))
 
 (defn update-tab-status [tab]
-  (let [tab-data @(.getData tab)
-        charset-name (tab-data :charset)
-        line-ending-name (text-format/get-line-ending-name (tab-data :endings))]
+  (let [doc-id (.getData tab)
+        doc (@document-state/docs doc-id)
+        charset-name (doc :charset)
+        line-ending-name (text-format/get-line-ending-name (doc :endings))]
     (status-bar/update-current-endings (str line-ending-name
                                             " / "
                                             charset-name))))
@@ -53,13 +55,16 @@
   ([state]
      (set-modified-status (tab-folder/current-tab) state))
   ([tab state]
-     (dosync
-       (commute (.getData tab) assoc :modified state))
-     (update-tab-text tab)))
+     (let [doc-id (.getData tab)]
+       (dosync
+         (commute document-state/docs
+                  assoc-in [doc-id :modified] state))
+       (update-tab-text tab))))
 
 (defn get-all-tabs-data-values [key]
   (let [tabs (tab-folder/all-tabs)
-        items (map #(key @(.getData %)) tabs)]
+        items (map #(key (@document-state/docs (.getData %)))
+                   tabs)]
     items))
 
 (defn for-each-textbox [action]
@@ -67,27 +72,30 @@
     (doseq [textbox textboxes]
       (action textbox))))
 
-(defn- get-all-document-datas []
+(defn- get-all-open-doc-ids []
   (let [tabs (tab-folder/all-tabs)
-        document-datas (map #(deref (.getData %)) tabs)]
-    document-datas))
+        doc-ids (map #(.getData %) tabs)]
+    doc-ids))
 
 (defn for-each-tab [action]
-  (let [document-datas (get-all-document-datas)]
-    (doseq [document-data document-datas]
-      (action document-data))))
+  (let [doc-ids (get-all-open-doc-ids)]
+    (dosync
+     (doseq [doc-id doc-ids]
+       (commute document-state/docs
+                update-in [doc-id] action)))))
 
 (defn tab-selected-action [selected-tab]
-  (dosync
-    (ref-set document-state/current (.getData selected-tab)))
-  (.setFocus (document-state/this :textbox))
+  (document-state/set-current-doc-id (.getData selected-tab))
+  (.setFocus (document-state/current :textbox))
   (update-tab-status selected-tab))
 
 (defn select-tab-with-file-path [file-path]
   (loop [tabs (tab-folder/all-tabs)]
     (let [tab (first tabs)
-          more-tabs (next tabs)]
-      (if (= file-path (:filepath @(.getData tab)))
+          more-tabs (next tabs)
+		  doc-id (.getData tab)
+		  doc (@document-state/docs doc-id)]
+      (if (= file-path (:filepath doc))
         (do
           (.setSelection @hooks/tab-folder tab)
           (tab-selected-action tab))
@@ -97,7 +105,7 @@
 (defn on-text-box-change [old-text start length]
   (let [new-text (if (zero? length)
                    ""
-                   (.getTextRange (document-state/this :textbox) start length))]
+                   (.getTextRange (document-state/current :textbox) start length))]
     (undo/do-text-change old-text new-text start length)))
 
 (defn on-text-box-verify-key [event]    
@@ -113,16 +121,17 @@
       (loop [remaining-tabs tabs]
         (if remaining-tabs
           (let [tab (first remaining-tabs)
-                tab-data @(.getData tab)
-                file-path (tab-data :filepath)
-                is-modified (tab-data :modified)]
+                doc-id (.getData tab)
+				doc (@document-state/docs doc-id)
+                file-path (doc :filepath)
+                is-modified (doc :modified)]
             (if (and (not is-modified)
                      (nil? file-path))
               (.dispose tab)
               (recur (next remaining-tabs)))))))))
 
 (defn- get-style-range-functions []
-  (let [style-range-function-map (document-state/this :style-range-function-map)]
+  (let [style-range-function-map (document-state/current :style-range-function-map)]
     (if style-range-function-map
       (vals style-range-function-map)
       [])))
@@ -135,11 +144,11 @@
                                                     on-text-box-change
                                                     open-file-paths-in-tabs
                                                     get-style-range-functions)
-        doc-data-ref (ref (document-state/make-blank-document text numbering
-                                                        canvas doc-name))]
-    (.setData tab doc-data-ref)
+        doc-id (document-state/make-blank-doc text numbering
+                                              canvas doc-name)]
+    (.setData tab doc-id)
     (.setFocus text)
-    (document-state/set-current doc-data-ref)
+    (document-state/set-current-doc-id doc-id)
     (update-tab-status tab)))
 
 (defn file-already-open? [file-path]
@@ -179,14 +188,14 @@
                                                               get-style-range-functions)
                   [dir name] (io/get-file-name-parts file-name)
                   content-line-endings (text-format/determine-line-endings content)
-                  doc-data (ref (document-state/make-document text numbering
-                                                        canvas name
-                                                        file-name dir
-                                                        content-line-endings
-                                                        charset))]
-              (.setData tab doc-data)
+                  doc-id (document-state/make-doc text numbering
+                                                  canvas name
+                                                  file-name dir
+                                                  content-line-endings
+                                                  charset)]
+              (.setData tab doc-id)
               (.setFocus text)
-              (document-state/set-current doc-data)
+              (document-state/set-current-doc-id doc-id)
               (update-tab-status tab)
 
               (recent/add-recent-file file-name)
@@ -215,7 +224,7 @@
   (open-blank-file-in-new-tab))
 
 (defn do-open []
-  (let [file-name (file-dialogs/open-dialog "Open" (document-state/this :directory))]
+  (let [file-name (file-dialogs/open-dialog "Open" (document-state/current :directory))]
     (open-file-in-new-tab file-name)))
 
 (defn do-save-as
@@ -223,10 +232,11 @@
      (do-save-as (tab-folder/current-tab)))
   ([tab-item]
      (if tab-item
-       (let [tab-data-ref (.getData tab-item)
-             content (.getText (@tab-data-ref :textbox))
-             old-doc-name (@tab-data-ref :docname)
-             old-doc-dir (@tab-data-ref :directory)
+       (let [doc-id (.getData tab-item)
+	     doc (@document-state/docs doc-id)
+             content (.getText (doc :textbox))
+             old-doc-name (doc :docname)
+             old-doc-dir (doc :directory)
              file-name (file-dialogs/save-dialog
                          (str "Save <" old-doc-name "> As...")
                          old-doc-dir
@@ -235,13 +245,14 @@
            (do
              (let [[dir doc-name] (io/get-file-name-parts file-name)]
                (dosync
-                (commute tab-data-ref assoc
+                (commute document-state/docs
+                         assoc-in [doc-id]
                          :filepath file-name
                          :directory dir
                          :docname doc-name)))
              (update-tab-text tab-item)
-             (let [endings (@tab-data-ref :endings)
-                   charset (@tab-data-ref :charset)
+             (let [endings (doc :endings)
+                   charset (doc :charset)
                    updated-content (text-format/change-line-endings content endings)]
                (io/write-text-file file-name updated-content charset))
              (set-modified-status tab-item false)
@@ -256,13 +267,14 @@
   ; Save the given tab item
   ([tab-item]
      (if tab-item
-       (let [tab-data-ref (.getData tab-item)
-             content (.getText (@tab-data-ref :textbox))
-             file-name (@tab-data-ref :filepath)]
+       (let [doc-id (.getData tab-item)
+	         doc (@document-state/docs doc-id)
+             content (.getText (doc :textbox))
+             file-name (doc :filepath)]
          (if file-name
            (do
-             (let [endings (@tab-data-ref :endings)
-                   charset (@tab-data-ref :charset)
+             (let [endings (doc :endings)
+                   charset (doc :charset)
                    updated-content (text-format/change-line-endings content endings)]
                (io/write-text-file file-name updated-content charset))
              (set-modified-status tab-item false))
@@ -271,8 +283,9 @@
 (defn do-save-all []
   (loop [tabs (tab-folder/all-tabs)]
     (doseq [tab tabs]
-      (let [tab-data-ref (.getData tab)
-            is-modified (@tab-data-ref :modified)]
+      (let [doc-id (.getData tab)
+	        doc (@document-state/docs doc-id)
+            is-modified (doc :modified)]
         (if is-modified
           (do-save tab))))))
 
@@ -280,8 +293,9 @@
   ([]
      (tab-modified? (tab-folder/current-tab)))
   ([tab-item]
-     (let [tab-data-ref (.getData tab-item)
-           is-modified (@tab-data-ref :modified)]
+     (let [doc-id (.getData tab-item)
+	   doc (@document-state/docs doc-id)
+           is-modified (doc :modified)]
        is-modified)))
 
 (defn any-tabs-modified? []
@@ -292,9 +306,10 @@
 
 (defn change-current-tab-line-endings [line-endings]
   (let [tab (tab-folder/current-tab)
-        tab-data-ref (.getData tab)]
+        doc-id (.getData tab)]
     (dosync
-      (commute tab-data-ref assoc :endings line-endings))
+      (commute document-state/docs
+	           assoc-in [doc-id :endings] line-endings))
     (update-tab-status tab)))
 
 (defn verify-all-tabs-saved-before-action [action]
@@ -306,7 +321,7 @@
     (action)))
 
 (defn verify-current-tab-saved-before-action [action]
-  (if (document-state/this :modified)
+  (if (document-state/current :modified)
     (info-dialogs/confirm-action "Warning" "Do you want to save the current document?"
                            do-save
                            action

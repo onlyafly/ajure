@@ -53,10 +53,10 @@
                                         (set! (. event type) SWT/None))))
 
 (defn on-before-history-change []
-  (text-editor/pause-change-listening (document-state/this :textbox)))
+  (text-editor/pause-change-listening (document-state/current :textbox)))
 
 (defn on-after-history-change []
-  (text-editor/resume-change-listening (document-state/this :textbox)
+  (text-editor/resume-change-listening (document-state/current :textbox)
                                        tabs/on-text-box-change))
 
 (defn toggle-word-wrap []
@@ -122,12 +122,12 @@
   (def-menu "Edit"
     (:editor-combo "Undo"
                    [MOD1] \z
-                   (undo/do-undo (document-state/this :textbox)
+                   (undo/do-undo (document-state/current :textbox)
                                  on-before-history-change
                                  on-after-history-change))
     (:editor-combo "Redo"
                    [SHIFT MOD1] \z
-                   (undo/do-redo (document-state/this :textbox)
+                   (undo/do-redo (document-state/current :textbox)
                                  on-before-history-change
                                  on-after-history-change))
     (:sep)
@@ -210,7 +210,7 @@
         (setup-menus)
 
         (modules-init-action)
-
+        
         ;; Update the GUI from settings where applicable here
         (editors/update-editor-font-from-settings)
         
