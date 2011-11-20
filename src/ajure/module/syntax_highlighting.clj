@@ -12,7 +12,7 @@
                        [status-bar :as status-bar]
                        [text-editor :as text-editor]
                        [search-text-box :as stb])
-            (ajure.state [document-state :as document-state]
+            (ajure.state [doc-state :as doc-state]
 			             [hooks :as hooks])
 			(ajure.util [swt :as swt]))
   (:use (ajure.gui [access :only (def-new-menu def-append-menu)])
@@ -38,11 +38,10 @@
                    (conj ranges range)))
           ranges)))))
 
-(defn- document-creation-action [doc]
-  (assoc-in doc
-            [:style-range-function-map :syntax-highlighting]
+(defn- doc-initialization [doc]
+  (assoc-in doc [:style-range-function-map :syntax-highlighting]
             get-matching-style-ranges))
 
 (defn init []
-  (document-state/add-creation-action :syntax-highlighting document-creation-action)
-  (tabs/for-each-tab document-creation-action))
+  (doc-state/do-add-doc-initialization :syntax-highlighting doc-initialization)
+  (tabs/for-each-tab doc-initialization))

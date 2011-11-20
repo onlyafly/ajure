@@ -22,7 +22,7 @@
                        [resources :as resources]
                        [shell :as shell]
                        [text-editor :as text-editor])
-			(ajure.state [document-state :as document-state]
+			(ajure.state [doc-state :as doc-state]
 			             [hooks :as hooks])
             (ajure.util [platform :as platform]
                         [swt :as swt]
@@ -35,20 +35,20 @@
        (project/verify-project-saved-then-close?)))
 
 (defn on-before-history-change []
-  (text-editor/pause-change-listening (document-state/current :textbox)))
+  (text-editor/pause-change-listening (doc-state/current :text-box)))
 
 (defn on-after-history-change []
-  (text-editor/resume-change-listening (document-state/current :textbox)
+  (text-editor/resume-change-listening (doc-state/current :text-box)
                                        tabs/on-text-box-change))
 
 (defn create-edit-popup-menu-items [parent-menu]
   (vector
    (swt/create-menu-item parent-menu "Undo"
-                         #(undo/do-undo (document-state/current :textbox)
+                         #(undo/do-undo (doc-state/current :text-box)
                                         on-before-history-change
                                         on-after-history-change))
    (swt/create-menu-item parent-menu "Redo"
-                         #(undo/do-redo (document-state/current :textbox)
+                         #(undo/do-redo (doc-state/current :text-box)
                                         on-before-history-change
                                         on-after-history-change))
    (swt/create-menu-separator parent-menu)

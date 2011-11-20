@@ -18,7 +18,7 @@
                        [text-editor :as text-editor]
                        [info-dialogs :as info-dialogs]
                        [access :as access])
-			(ajure.state [document-state :as document-state]
+			(ajure.state [doc-state :as doc-state]
 			             [hooks :as hooks])
             (ajure.util [swt :as swt]
                         [platform :as platform]
@@ -53,10 +53,10 @@
                                         (set! (. event type) SWT/None))))
 
 (defn on-before-history-change []
-  (text-editor/pause-change-listening (document-state/current :textbox)))
+  (text-editor/pause-change-listening (doc-state/current :text-box)))
 
 (defn on-after-history-change []
-  (text-editor/resume-change-listening (document-state/current :textbox)
+  (text-editor/resume-change-listening (doc-state/current :text-box)
                                        tabs/on-text-box-change))
 
 (defn toggle-word-wrap []
@@ -122,12 +122,12 @@
   (def-menu "Edit"
     (:editor-combo "Undo"
                    [MOD1] \z
-                   (undo/do-undo (document-state/current :textbox)
+                   (undo/do-undo (doc-state/current :text-box)
                                  on-before-history-change
                                  on-after-history-change))
     (:editor-combo "Redo"
                    [SHIFT MOD1] \z
-                   (undo/do-redo (document-state/current :textbox)
+                   (undo/do-redo (doc-state/current :text-box)
                                  on-before-history-change
                                  on-after-history-change))
     (:sep)
@@ -169,7 +169,7 @@
   (def-menu "Script"
     (:editor-combo "Run This Document"
                    [MOD1] \r
-                   (scripts/run-document)))
+                   (scripts/run-doc)))
       
   (def-menu "Help"
     (:item "About Ajure"

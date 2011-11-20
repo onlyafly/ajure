@@ -4,28 +4,28 @@
 
 (ns ajure.core.text
   (:import (org.eclipse.swt.custom ST))
-  (:require (ajure.state [document-state :as document-state]))
-  (:use (ajure.state [document-state :only (current)])
+  (:require (ajure.state [doc-state :as doc-state]))
+  (:use (ajure.state [doc-state :only (current)])
         (ajure.gui [access :only (def-menu)])))
 
 ;; TODO there are many more actions in ST that can be used
 (defn do-select-word-next []
-  (.invokeAction (current :textbox) ST/SELECT_WORD_NEXT))
+  (.invokeAction (current :text-box) ST/SELECT_WORD_NEXT))
 
 (defn get-selection []
-  (.getSelectionText (current :textbox)))
+  (.getSelectionText (current :text-box)))
 
 (defn replace-selection [replacement-text]
   (when replacement-text
-    (let [range (.getSelectionRange (current :textbox))
+    (let [range (.getSelectionRange (current :text-box))
           current-start (. range x)
           current-length (. range y)]
-      (.replaceTextRange (current :textbox)
+      (.replaceTextRange (current :text-box)
                          current-start
                          current-length
                          replacement-text)
       ;; .setSelection also scrolls the selection into view
-      (.setSelection (current :textbox)
+      (.setSelection (current :text-box)
                      current-start
                      (+ current-start
                         (.length replacement-text))))))
@@ -39,13 +39,13 @@
     (replace-selection uppered-selection)))
 
 (defn do-cut-text []
-  (.cut (current :textbox)))
+  (.cut (current :text-box)))
 (defn do-copy-text []
-  (.copy (current :textbox)))
+  (.copy (current :text-box)))
 (defn do-paste-text [] 
-  (.paste (current :textbox)))
+  (.paste (current :text-box)))
 (defn do-select-all-text []
-  (.selectAll (current :textbox)))
+  (.selectAll (current :text-box)))
 
 ;;---------- Text Menu
 

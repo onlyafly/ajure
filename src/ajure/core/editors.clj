@@ -9,7 +9,7 @@
             (ajure.gui [text-editor :as text-editor]
                        [fonts :as fonts])
             (ajure.state [hooks :as hooks]
-                         [document-state :as document-state])
+                         [doc-state :as doc-state])
             (ajure.util [swt :as swt]))
   (:use ajure.util.other))
 
@@ -32,7 +32,7 @@
   ;; Redraw line numbers to reflect change in font
   (dosync
     (ref-set hooks/editor-font-data font-data))
-  (text-editor/redraw-line-numbering (document-state/current :numbering))
+  (text-editor/redraw-line-numbering (doc-state/current :numbering))
   (let [font (fonts/create-font font-data)]
     (tabs/for-each-textbox #(.setFont % font))))
 
