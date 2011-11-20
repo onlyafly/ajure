@@ -72,5 +72,5 @@
         number @document-number
         combined (str name number)]
     (dosync
-      (commute document-number #(+ 1 %)))
+      (commute document-number inc))
     combined))

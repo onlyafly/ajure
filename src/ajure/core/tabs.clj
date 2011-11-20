@@ -246,10 +246,8 @@
              (let [[dir doc-name] (io/get-file-name-parts file-name)]
                (dosync
                 (commute document-state/docs
-                         assoc-in [doc-id]
-                         :filepath file-name
-                         :directory dir
-                         :docname doc-name)))
+                         update-in [doc-id]
+						 merge {:filepath file-name :directory dir :docname doc-name})))
              (update-tab-text tab-item)
              (let [endings (doc :endings)
                    charset (doc :charset)

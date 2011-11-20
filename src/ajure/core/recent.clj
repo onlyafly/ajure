@@ -2,12 +2,6 @@
   (:require (ajure.state [hooks :as hooks])
             (ajure.util [queue :as queue])))
 
-(defn- apply-in-map
-  "Same as 'apply' but applies on the contents of a particular key on a
-  map."
-  [hashed-map coll-key f & values]
-  (assoc hashed-map coll-key (apply f (hashed-map coll-key) values)))
-
 (defn- object-not-recent? [settings-key file-path]
   (if (some #{file-path} (@hooks/settings settings-key))
     false
@@ -18,16 +12,19 @@
     (dosync
      
      ;; Enqueue a new file path
-     (commute hooks/settings apply-in-map settings-key queue/enqueue file-path)
+     (commute hooks/settings
+              update-in [settings-key] queue/enqueue file-path)
      
      (when (> (count (@hooks/settings settings-key)) 10)
        
        ;; Dequeue the oldest file-path
-       (commute hooks/settings apply-in-map settings-key queue/dequeue)))))
+       (commute hooks/settings
+                update-in [settings-key] queue/dequeue)))))
 
 (defn- add-recent-objects [settings-key file-paths]
-  (doseq [file-path file-paths]
-    (add-recent-object settings-key file-path)))
+  (dosync
+   (doseq [file-path file-paths]
+     (add-recent-object settings-key file-path))))
 
 (defn add-recent-file [file-path]
   (add-recent-object :recent-files file-path))
