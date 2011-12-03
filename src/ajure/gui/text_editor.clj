@@ -43,12 +43,12 @@
 
          (doto gc
            (.setFont (Font. display @hooks/editor-font-data))
-           (.setBackground (@resources/colors :light-gray))
+           (.setBackground (@hooks/colors :light-gray))
            (.fillRectangle event-x event-y event-width event-height)
-           (.setForeground (@resources/colors :gray))
+           (.setForeground (@hooks/colors :gray))
            (.drawLine (+ event-x event-width -1) 0
                       (+ event-x event-width -1) event-height)
-           (.setForeground (@resources/colors :black)))
+           (.setForeground (@hooks/colors :black)))
 
          (loop [line-num top-line-num]
            (when (< line-num line-count)

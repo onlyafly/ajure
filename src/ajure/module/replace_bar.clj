@@ -37,7 +37,7 @@
   (let [range (StyleRange.)]
     (set! (. range start) begin)
     (set! (. range length) len)
-    (set! (. range background) (@resources/colors :yellow))
+    (set! (. range background) (@hooks/colors :yellow))
     range))
 
 (defn get-matching-style-ranges [line-string line-offset]

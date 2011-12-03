@@ -16,6 +16,9 @@
 ;; All persistent storage saved in this map
 (def settings (ref {}))
 
+(def images (ref {}))
+(def colors (ref {}))
+
 ;;---------- Unique per shell
 
 (def shell (ref nil))

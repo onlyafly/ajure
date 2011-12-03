@@ -173,7 +173,7 @@
       
   (def-menu "Help"
     (:item "About Ajure"
-           (info-dialogs/show-about-box))
+           (info-dialogs/show-about-box!))
     (:item "Open Error Log"
            (tabs/open-file-in-new-tab file/error-log-file-path))))
 
@@ -182,7 +182,7 @@
 ; Action to take on display disposal
 (defn release-action []
   (on-program-closing)
-  (resources/release-all))
+  (resources/do-release-all! hooks/images hooks/colors))
 
 ; Action to take on main loop exception
 (defn exception-action [exception]
@@ -203,7 +203,7 @@
       ;; available when it is rendered
       (settings/load-settings)
 
-      (resources/allocate-all display)
+      (resources/do-allocate-all! display hooks/images hooks/colors)
 
       (let [shell (window/show-window display)]
         (setup-key-combos)

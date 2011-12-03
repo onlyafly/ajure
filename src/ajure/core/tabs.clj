@@ -178,9 +178,9 @@
     (when file-name
       (cond
        (not (io/file-exists!? file-name))
-       (info-dialogs/warn-file-not-exists file-name)
+       (info-dialogs/warn-file-not-exists! file-name)
        (not (io/file-readable!? file-name))
-       (info-dialogs/warn-file-not-readable file-name)
+       (info-dialogs/warn-file-not-readable! file-name)
        :else
        (if (io/file-readable!? file-name)
          (let [[content charset]
@@ -322,7 +322,7 @@
 
 (defn verify-all-tabs-saved-before-action [action]
   (if (any-tabs-modified?)
-    (info-dialogs/confirm-action "Warning" "Do you want to save all open docs?"
+    (info-dialogs/confirm-action! "Warning" "Do you want to save all open docs?"
                                  do-save-all
                                  action
                                  #(do nil))
@@ -330,7 +330,7 @@
 
 (defn verify-current-tab-saved-before-action [action]
   (if (doc-state/current :is-modified)
-    (info-dialogs/confirm-action "Warning" "Do you want to save the current doc?"
+    (info-dialogs/confirm-action! "Warning" "Do you want to save the current doc?"
                                  do-save
                                  action
                                  #(do nil))
@@ -338,7 +338,7 @@
 
 (defn verify-all-tabs-saved-then-close? []
   (if (any-tabs-modified?)
-    (info-dialogs/confirm-action 
+    (info-dialogs/confirm-action!
      "Warning" "Do you want to save all open docs?"
      #(do
         (do-save-all)
@@ -349,7 +349,7 @@
 
 (defn verify-tab-saved-then-close? [tab-item]
   (if (tab-modified? tab-item)
-    (info-dialogs/confirm-action
+    (info-dialogs/confirm-action!
      "Warning" "Do you want to save the doc before closing?"
      #(do
         (do-save tab-item)
@@ -366,7 +366,7 @@
                        (open-blank-file-in-new-tab))
                      (.dispose tab-item)))]
     (if (tab-modified? tab-item)
-      (info-dialogs/confirm-action
+      (info-dialogs/confirm-action!
        "Warning" "Do you want to save the doc before closing?"
        #(do-save tab-item)
        #(close-fn)

@@ -40,7 +40,7 @@
 
 (defn verify-project-saved-then-close? []
   (if @is-project-modified
-    (info-dialogs/confirm-action
+    (info-dialogs/confirm-action!
       "Warning" "Do you want to save the current project?"
       #(do
         (do-save-project)
@@ -51,7 +51,7 @@
 
 (defn verify-project-saved-before-action [action]
   (if @is-project-modified
-    (info-dialogs/confirm-action
+    (info-dialogs/confirm-action!
       "Warning" "Do you want to save the current project?"
       do-save-project
       action

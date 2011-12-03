@@ -70,7 +70,7 @@
      (doto shell
        (.setText info/application-name)
 
-       (.setImage (@resources/images :logo))
+       (.setImage (@hooks/images :logo))
 
        ;; Program exit point
        ;; This is called when the shell is closed using the X at the top

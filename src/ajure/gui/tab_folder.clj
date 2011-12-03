@@ -24,14 +24,14 @@
 
      ;; Color of selected and non-selected tabs
      (let [colors (into-array 
-                   [(@resources/colors :azure-light)
-                    (@resources/colors :azure-medium)
-                    (@resources/colors :azure-dark)
-                    (@resources/colors :azure-dark)])
+                   [(@hooks/colors :azure-light)
+                    (@hooks/colors :azure-medium)
+                    (@hooks/colors :azure-dark)
+                    (@hooks/colors :azure-dark)])
            percents (int-array [25 50 100])]
        (.setSelectionBackground tab-folder colors percents true))
      
-     (.setBackground tab-folder (@resources/colors :std-gray))
+     (.setBackground tab-folder (@hooks/colors :std-gray))
 
      (doto tab-folder
        ;; Toggles between curvy tabs and square tabs
