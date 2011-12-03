@@ -32,7 +32,7 @@
   ;; Redraw line numbers to reflect change in font
   (dosync
     (ref-set hooks/editor-font-data font-data))
-  (text-editor/redraw-line-numbering (doc-state/current :numbering))
+  (text-editor/redraw-line-numbering! (doc-state/current :numbering))
   (let [font (fonts/create-font font-data)]
     (tabs/for-each-textbox #(.setFont % font))))
 

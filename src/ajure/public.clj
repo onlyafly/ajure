@@ -33,7 +33,7 @@
     (swt/show-info-dialog! shell title msg)))
 
 (defn set-status-msg [msg]
-  (status-bar/set-message msg))
+  (status-bar/set-message! msg))
 
 (defn set-word-wrap [enable]
   (editors/set-current-word-wrap enable))

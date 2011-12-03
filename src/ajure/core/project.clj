@@ -107,7 +107,7 @@
                (ref-set is-project-modified false))))))
   (recent/add-recent-project file-name)
   (update-recent-projects-menu)
-  (status-bar/set-message (str "Saved project to "
+  (status-bar/set-message! (str "Saved project to "
                                "<" file-name ">")))
 
 (defn open-project [file-path]

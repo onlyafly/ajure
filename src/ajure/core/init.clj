@@ -53,11 +53,11 @@
                                         (set! (. event type) SWT/None))))
 
 (defn on-before-history-change []
-  (text-editor/pause-change-listening (doc-state/current :text-box)))
+  (text-editor/pause-change-listening! (doc-state/current :text-box)))
 
 (defn on-after-history-change []
-  (text-editor/resume-change-listening (doc-state/current :text-box)
-                                       tabs/on-text-box-change))
+  (text-editor/resume-change-listening! (doc-state/current :text-box)
+                                        tabs/on-text-box-change))
 
 (defn toggle-word-wrap []
   (let [new-state (not (@hooks/settings :word-wrap-enabled))]
@@ -186,7 +186,7 @@
 
 ; Action to take on main loop exception
 (defn exception-action [exception]
-  (status-bar/set-message 
+  (status-bar/set-message!
    (str "Error occured. For details, view error log at "
         "<" file/error-log-file-path ">"))
   (file/log-exception exception)

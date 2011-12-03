@@ -37,7 +37,7 @@
      (update-tab-text (tab-folder/current-tab)))
   ([tab-item]
      (let [doc-id (.getData tab-item)
-	       doc (@doc-state/docs doc-id)
+           doc (@doc-state/docs doc-id)
            doc-name (doc :doc-name)
            modified-flag (if (doc :is-modified) "* " "")]
        (.setText tab-item (str modified-flag doc-name)))))
@@ -47,9 +47,9 @@
         doc (@doc-state/docs doc-id)
         charset-name (doc :character-set)
         line-ending-name (text-format/get-line-ending-name (doc :endings))]
-    (status-bar/update-current-endings (str line-ending-name
-                                            " / "
-                                            charset-name))))
+    (status-bar/do-update-current-endings! (str line-ending-name
+                                                " / "
+                                                charset-name))))
 
 (defn set-modified-status
   ([state]
@@ -57,8 +57,8 @@
   ([tab state]
      (let [doc-id (.getData tab)]
        (dosync
-         (commute doc-state/docs
-                  assoc-in [doc-id :is-modified] state))
+        (commute doc-state/docs
+                 assoc-in [doc-id :is-modified] state))
        (update-tab-text tab))))
 
 (defn get-all-tabs-data-values [key]
@@ -93,8 +93,8 @@
   (loop [tabs (tab-folder/all-tabs)]
     (let [tab (first tabs)
           more-tabs (next tabs)
-		  doc-id (.getData tab)
-		  doc (@doc-state/docs doc-id)]
+          doc-id (.getData tab)
+          doc (@doc-state/docs doc-id)]
       (if (= file-path (:filepath doc))
         (do
           (.setSelection @hooks/tab-folder tab)
@@ -115,14 +115,14 @@
 
 (defn close-an-unused-tab-if-replaced []
   (let [tabs (tab-folder/all-tabs)]
-    ; We only want to close an unused tab if there are two tabs:
-    ; the new tab and an unused one.
+                                        ; We only want to close an unused tab if there are two tabs:
+                                        ; the new tab and an unused one.
     (if (= 2 (tab-folder/tab-count))
       (loop [remaining-tabs tabs]
         (if remaining-tabs
           (let [tab (first remaining-tabs)
                 doc-id (.getData tab)
-				doc (@doc-state/docs doc-id)
+                doc (@doc-state/docs doc-id)
                 file-path (doc :file-path)
                 is-modified (doc :is-modified)]
             (if (and (not is-modified)
@@ -138,12 +138,15 @@
 
 (defn open-blank-file-in-new-tab []
   (let [doc-name (doc-state/get-next-available-doc-name)
-        [tab canvas text numbering] (tab/create-tab doc-name
-                                                    #(set-modified-status true)
-                                                    on-text-box-verify-key
-                                                    on-text-box-change
-                                                    open-file-paths-in-tabs
-                                                    get-style-range-functions)
+        [tab canvas text numbering] (tab/create-tab! @hooks/display
+                                                     @hooks/shell
+                                                     @hooks/tab-folder
+                                                     doc-name
+                                                     #(set-modified-status true)
+                                                     on-text-box-verify-key
+                                                     on-text-box-change
+                                                     open-file-paths-in-tabs
+                                                     get-style-range-functions)
         doc-id (doc-state/do-make-blank-doc text
                                             numbering
                                             canvas
@@ -163,61 +166,64 @@
   (doseq [file-path (@hooks/settings :recent-files)]
     (let [file-name (io/get-file-name-only! file-path)]
       (access/def-append-sub-menu "File" "Recent Files"
-                                  (:item file-name
-                                         (open-file-in-new-tab file-path))))))
+        (:item file-name
+               (open-file-in-new-tab file-path))))))
 
 (defn open-file-in-new-tab [file-name]
   (if (file-already-open? file-name)
-    ; If the file is already open, bring its tab to the front
+    ;; If the file is already open, bring its tab to the front
     (select-tab-with-file-path file-name)
     
-    ; If the file is not already open, open it in a new tab
+    ;; If the file is not already open, open it in a new tab
     (when file-name
       (cond
-        (not (io/file-exists!? file-name))
-          (info-dialogs/warn-file-not-exists file-name)
-        (not (io/file-readable!? file-name))
-          (info-dialogs/warn-file-not-readable file-name)
-        :else
-          (if (io/file-readable!? file-name)
-            (let [[content charset]
-                    (io/read-content-and-charset-of-text-file! file-name)
-                  [tab canvas text numbering] (tab/create-tab file-name
-                                                              #(set-modified-status true)
-                                                              on-text-box-verify-key
-                                                              on-text-box-change
-                                                              open-file-paths-in-tabs
-                                                              get-style-range-functions)
-                  [dir name] (io/get-file-name-parts! file-name)
-                  content-line-endings (text-format/determine-line-endings content)
-                  doc-id (doc-state/do-make-doc text 
-				                                numbering
-                                                canvas
-												name
-                                                file-name dir
-                                                content-line-endings
-                                                charset)]
-              (.setData tab doc-id)
-              (.setFocus text)
-              (doc-state/do-set-current-doc-id doc-id)
-              (update-tab-status tab)
+       (not (io/file-exists!? file-name))
+       (info-dialogs/warn-file-not-exists file-name)
+       (not (io/file-readable!? file-name))
+       (info-dialogs/warn-file-not-readable file-name)
+       :else
+       (if (io/file-readable!? file-name)
+         (let [[content charset]
+               (io/read-content-and-charset-of-text-file! file-name)
+               [tab canvas text numbering] (tab/create-tab! @hooks/display
+                                                            @hooks/shell
+                                                            @hooks/tab-folder
+                                                            file-name
+                                                            #(set-modified-status true)
+                                                            on-text-box-verify-key
+                                                            on-text-box-change
+                                                            open-file-paths-in-tabs
+                                                            get-style-range-functions)
+               [dir name] (io/get-file-name-parts! file-name)
+               content-line-endings (text-format/determine-line-endings content)
+               doc-id (doc-state/do-make-doc text 
+                                             numbering
+                                             canvas
+                                             name
+                                             file-name dir
+                                             content-line-endings
+                                             charset)]
+           (.setData tab doc-id)
+           (.setFocus text)
+           (doc-state/do-set-current-doc-id doc-id)
+           (update-tab-status tab)
 
-              (recent/add-recent-file file-name)
-              (update-recent-files-menu)
+           (recent/add-recent-file file-name)
+           (update-recent-files-menu)
 
-              ;; 1. The extended modify listener is temporarily removed so that
-              ;;    no change will be registered.
-              ;; 2. The current doc must be set prior to the text being set
-              ;;    so that the current text-box is set before the modify event
-              ;;    is fired
-              (text-editor/pause-change-listening text)
-              (.setText text content)
-              (text-editor/redraw-line-numbering numbering)
-              (text-editor/resume-change-listening text on-text-box-change)
+           ;; 1. The extended modify listener is temporarily removed so that
+           ;;    no change will be registered.
+           ;; 2. The current doc must be set prior to the text being set
+           ;;    so that the current text-box is set before the modify event
+           ;;    is fired
+           (text-editor/pause-change-listening! text)
+           (.setText text content)
+           (text-editor/redraw-line-numbering! numbering)
+           (text-editor/resume-change-listening! text on-text-box-change)
 
-              (set-modified-status false)
+           (set-modified-status false)
 
-              (close-an-unused-tab-if-replaced)))))))
+           (close-an-unused-tab-if-replaced)))))))
 
 (defn open-file-paths-in-tabs [file-paths]
   (doseq [path file-paths]
@@ -242,16 +248,16 @@
              old-doc-name (doc :doc-name)
              old-doc-dir (doc :directory)
              file-name (file-dialogs/save-dialog
-                         (str "Save <" old-doc-name "> As...")
-                         old-doc-dir
-                         old-doc-name)]
+                        (str "Save <" old-doc-name "> As...")
+                        old-doc-dir
+                        old-doc-name)]
          (if file-name
            (do
              (let [[dir doc-name] (io/get-file-name-parts! file-name)]
                (dosync
                 (commute doc-state/docs
                          update-in [doc-id]
-						 merge {:filepath file-name :directory dir :doc-name doc-name})))
+                         merge {:filepath file-name :directory dir :doc-name doc-name})))
              (update-tab-text tab-item)
              (let [endings (doc :endings)
                    charset (doc :character-set)
@@ -263,14 +269,14 @@
              (update-recent-files-menu)))))))
 
 (defn do-save
-  ; Save the current tab item
+                                        ; Save the current tab item
   ([]
      (do-save (tab-folder/current-tab)))
-  ; Save the given tab item
+                                        ; Save the given tab item
   ([tab-item]
      (if tab-item
        (let [doc-id (.getData tab-item)
-	         doc (@doc-state/docs doc-id)
+             doc (@doc-state/docs doc-id)
              content (.getText (doc :text-box))
              file-name (doc :file-path)]
          (if file-name
@@ -286,7 +292,7 @@
   (loop [tabs (tab-folder/all-tabs)]
     (doseq [tab tabs]
       (let [doc-id (.getData tab)
-	        doc (@doc-state/docs doc-id)
+            doc (@doc-state/docs doc-id)
             is-modified (doc :is-modified)]
         (if is-modified
           (do-save tab))))))
@@ -310,46 +316,46 @@
   (let [tab (tab-folder/current-tab)
         doc-id (.getData tab)]
     (dosync
-      (commute doc-state/docs
-	           assoc-in [doc-id :endings] line-endings))
+     (commute doc-state/docs
+              assoc-in [doc-id :endings] line-endings))
     (update-tab-status tab)))
 
 (defn verify-all-tabs-saved-before-action [action]
   (if (any-tabs-modified?)
     (info-dialogs/confirm-action "Warning" "Do you want to save all open docs?"
-                           do-save-all
-                           action
-                           #(do nil))
+                                 do-save-all
+                                 action
+                                 #(do nil))
     (action)))
 
 (defn verify-current-tab-saved-before-action [action]
   (if (doc-state/current :is-modified)
     (info-dialogs/confirm-action "Warning" "Do you want to save the current doc?"
-                           do-save
-                           action
-                           #(do nil))
+                                 do-save
+                                 action
+                                 #(do nil))
     (action)))
 
 (defn verify-all-tabs-saved-then-close? []
   (if (any-tabs-modified?)
     (info-dialogs/confirm-action 
-      "Warning" "Do you want to save all open docs?"
-      #(do
-         (do-save-all)
-         false)
-      (constantly true)
-      (constantly false))
+     "Warning" "Do you want to save all open docs?"
+     #(do
+        (do-save-all)
+        false)
+     (constantly true)
+     (constantly false))
     true))
 
 (defn verify-tab-saved-then-close? [tab-item]
   (if (tab-modified? tab-item)
     (info-dialogs/confirm-action
-      "Warning" "Do you want to save the doc before closing?"
-      #(do
-         (do-save tab-item)
-         false)
-      (constantly true)
-      (constantly false))
+     "Warning" "Do you want to save the doc before closing?"
+     #(do
+        (do-save tab-item)
+        false)
+     (constantly true)
+     (constantly false))
     true))
 
 (defn verify-tab-saved-and-close []
@@ -361,8 +367,8 @@
                      (.dispose tab-item)))]
     (if (tab-modified? tab-item)
       (info-dialogs/confirm-action
-        "Warning" "Do you want to save the doc before closing?"
-        #(do-save tab-item)
-        #(close-fn)
-        #(do nil))
+       "Warning" "Do you want to save the doc before closing?"
+       #(do-save tab-item)
+       #(close-fn)
+       #(do nil))
       (close-fn))))

@@ -28,10 +28,10 @@
 (def find-case-sensitive (ref nil))
 
 (defn mark-find-succeeded [search-string]
-  (status-bar/set-message "Found \"" search-string "\""))
+  (status-bar/set-message! "Found \"" search-string "\""))
 
 (defn mark-find-failed [search-string]
-  (status-bar/set-message "Unable to find \"" search-string "\""))
+  (status-bar/set-message! "Unable to find \"" search-string "\""))
 
 (defn get-highlight-style-range [begin len]
   (let [range (StyleRange.)]
@@ -86,7 +86,7 @@
       (if (>= next-start 0)
         (do
           (.setSelection textbox next-start (+ next-start find-length))
-          (text-editor/redraw-line-numbering numbering)
+          (text-editor/redraw-line-numbering! numbering)
           (mark-find-succeeded @find-text))
         (do
           (mark-find-failed @find-text))))))
@@ -168,12 +168,12 @@
 
 (defn create-find-bar [parent hint-text replace-hint-text]
   (let [canvas (Canvas. parent SWT/NONE)
-        find-box (stb/create-search-text-box canvas
+        find-box (stb/create-search-text-box! canvas
                                              hint-text
                                              on-escape-pressed
                                              on-cancel-clicked
                                              on-enter-pressed)
-        replace-box (stb/create-search-text-box canvas
+        replace-box (stb/create-search-text-box! canvas
                                                 replace-hint-text
                                                 on-escape-pressed
                                                 on-cancel-clicked

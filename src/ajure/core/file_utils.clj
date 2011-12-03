@@ -43,6 +43,6 @@
         (dosync
           (commute hooks/settings assoc
                    :custom-script-file-path file-path))
-        (status-bar/set-message (str "Startup script set to"
+        (status-bar/set-message! (str "Startup script set to"
                                      "<" file-path ">"))))))
 

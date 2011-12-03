@@ -1,3 +1,7 @@
+;; ajure.state.doc
+;;
+;; Document structure and creation helper functions.
+
 (ns ajure.state.doc
   (:require (ajure.util [text-format :as text-format])))
 
@@ -29,7 +33,7 @@
           text-format/line-ending-default
           "UTF-8"
           {}     ;style-range-function-map
-		  ))
+          ))
 
 (defn create-doc [text-box numbering canvas doc-name
                   file-path directory line-ending
@@ -47,4 +51,4 @@
           line-ending
           character-set
           {}               ;style-range-function-map
-		  ))
+          ))
