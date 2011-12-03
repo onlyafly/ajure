@@ -24,9 +24,9 @@
 
 (defn add-files-to-tree [parent files]
   (doseq [file files]
-    (when (io/file-visible? file)
+    (when (io/file-visible!? file)
       (let [item (TreeItem. parent 0)
-            file-name (io/get-file-name-only file)]
+            file-name (io/get-file-name-only! file)]
         (if (zero? (count file-name))
           (.setText item (str file))
           (.setText item file-name))
@@ -96,7 +96,7 @@
                  item (.getItem tree point)]
              (when item
                (let [file (.getData item)]
-                 (if (io/file-not-directory? file)
+                 (if (io/file-not-directory!? file)
                    (double-click-file-action file)
                    (toggle-expanded-state item))))))))
       

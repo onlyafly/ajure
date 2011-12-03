@@ -191,6 +191,6 @@
 
     (attach-popup-menu text-box)
 
-    (swt/add-file-dropping-to-control text-box dropped-file-paths-action)
+    (swt/add-file-dropping-to-control! text-box dropped-file-paths-action)
 
     [margin-canvas text-box numbering]))

@@ -24,5 +24,15 @@
 (def tab-folder (ref nil))
 (def popup-menu (ref nil))
 (def file-tree (ref nil))
+
+;; Find
 (def find-text (ref ""))
 (def find-case-sensitive (ref false))
+
+;; Status Bar
+(def status-bar (ref nil))
+(def app-status-label (ref nil))
+(def doc-status-label (ref nil))
+
+;; Document Label Information
+(def current-endings (ref ""))

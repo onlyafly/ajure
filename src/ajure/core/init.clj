@@ -45,7 +45,7 @@
     (set! (. event doit) should-close)))
 
 (defn application-key-down-action [event]
-  (swt/execute-key-combo-in-mappings event @access/application-key-combos
+  (swt/execute-key-combo-in-mappings! event @access/application-key-combos
                                      #(do
                                         ; Consume the event
                                         (set! (. event doit) false)
@@ -65,9 +65,9 @@
 
 (defn do-choose-font []
   (let [original @hooks/editor-font-data
-        updated (swt/show-font-dialog @hooks/shell
-                                      "Choose Editor Font"
-                                      original)]
+        updated (swt/show-font-dialog! @hooks/shell
+                                       "Choose Editor Font"
+                                       original)]
     (when updated
       (editors/set-editor-font-data updated)
       (editors/update-settings-from-editor-font))))
@@ -219,7 +219,7 @@
         (when (str-not-empty? (@hooks/settings :custom-script-file-path))
           (scripts/try-load-file (@hooks/settings :custom-script-file-path)))
 
-        (swt/basic-loop display shell release-action exception-action)))
+        (swt/basic-loop! display shell release-action exception-action)))
     (catch Exception exc
       (file/log-exception exc)
       ;;FIXME remove throws before deployment so that exceptions are caught

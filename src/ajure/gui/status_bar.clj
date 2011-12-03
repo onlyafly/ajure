@@ -6,31 +6,19 @@
            (org.eclipse.swt.layout GridLayout GridData))
   (:require (ajure.state [hooks :as hooks])))
 
-;;---------- Status Labels
-
-(def status-bar (ref nil))
-(def app-status-label (ref nil))
-(def doc-status-label (ref nil))
-
-;;---------- Document Label Information
-
-(def current-endings (ref ""))
-
-;;---------- Operations
-
 (defn update-doc-status []
-  (if @doc-status-label
-    (doto @doc-status-label
-      (.setText @current-endings)
+  (if @hooks/doc-status-label
+    (doto @hooks/doc-status-label
+      (.setText @hooks/current-endings)
       (.update))))
 
 (defn update-current-endings [endings]
   (dosync
-    (ref-set current-endings endings))
+    (ref-set hooks/current-endings endings))
   (update-doc-status))
 
 (defn set-message [& messages]
-  (doto @app-status-label
+  (doto @hooks/app-status-label
     (.setText (apply str messages))
     (.update)))
 
@@ -61,9 +49,9 @@
                         data)))
 
     (dosync
-      (ref-set status-bar status-bar-canvas)
-      (ref-set app-status-label app-label)
-      (ref-set doc-status-label doc-label))
+      (ref-set hooks/status-bar status-bar-canvas)
+      (ref-set hooks/app-status-label app-label)
+      (ref-set hooks/doc-status-label doc-label))
 
     (update-doc-status)
 

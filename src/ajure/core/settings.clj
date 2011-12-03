@@ -20,15 +20,15 @@
                                     "ajure-settings.clj"))
 
 (defn load-settings []
-  (io/create-empty-file-unless-exists stored-settings-file-path)
-  (let [content (io/read-text-file stored-settings-file-path)]
+  (io/create-empty-file-unless-exists! stored-settings-file-path)
+  (let [content (io/read-text-file! stored-settings-file-path)]
     (when (str-not-empty? content)
       (let [loaded-object (read-string content)]
         (dosync
           (commute hooks/settings merge loaded-object))))))
 
 (defn save-settings []
-  (io/write-text-file stored-settings-file-path
+  (io/write-text-file! stored-settings-file-path
     (with-out-str
       (println ";" info/application-name info/version-number-string)
       (println "; Automatically generated file.  Modify with care.")

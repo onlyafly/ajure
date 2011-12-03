@@ -77,7 +77,7 @@
 (defn update-recent-projects-menu []
   (access/remove-menu-children "File" "Recent Projects")
   (doseq [file-path (@hooks/settings :recent-projects)]
-    (let [file-name (io/get-file-name-only file-path)]
+    (let [file-name (io/get-file-name-only! file-path)]
       (access/def-append-sub-menu "File" "Recent Projects"
                                   (:item file-name
                                          (open-project file-path))))))
@@ -93,7 +93,7 @@
 ;; Project files should only setup the data, not the UI.  The UI should
 ;; be handled by opening routines
 (defn save-project [file-name]
-  (io/write-text-file file-name
+  (io/write-text-file! file-name
     (with-out-str
       (let []
         (println ";; Ajure project file, version:" info/version-number-string)
@@ -138,7 +138,7 @@
   (if (project-currently-open?)
     ; Project open
     (let [[initial-dir initial-file-name] (if @project-file-name
-                                            (io/get-file-name-parts @project-file-name)
+                                            (io/get-file-name-parts! @project-file-name)
                                             [platform/home-dir ""])
           file-name (file-dialogs/save-dialog "Save Project As..."
                                               initial-dir
@@ -152,8 +152,8 @@
         (save-project file-name)))
 
     ; No project open
-    (swt/show-info-dialog @hooks/shell "Save Project"
-                          "There is no project currently open.")))
+    (swt/show-info-dialog! @hooks/shell "Save Project"
+                           "There is no project currently open.")))
 
 (defn do-save-project []
   (if (project-currently-open?)
@@ -165,13 +165,13 @@
       ; If not, let the user specify one
       (do-save-project-as))
     ; No project open
-    (swt/show-info-dialog @hooks/shell "Save Project"
-                          "There is no project currently open.")))
+    (swt/show-info-dialog! @hooks/shell "Save Project"
+                           "There is no project currently open.")))
 
 (defn do-close-project []
   (if (project-currently-open?)
     ; Project open
     (verify-project-saved-before-action close-current-project)
     ; No project open
-    (swt/show-info-dialog @hooks/shell "Close Project"
-                          "There is no project currently open.")))
+    (swt/show-info-dialog! @hooks/shell "Close Project"
+                           "There is no project currently open.")))

@@ -138,11 +138,11 @@
     (select-next-match is-case-sensitive)))
 
 (defn show []
-  (swt/dynamically-show-control @bar)
+  (swt/dynamically-show-control! @bar)
   (.setFocus @find-box-ref))
 
 (defn hide []
-  (swt/dynamically-hide-control @bar))
+  (swt/dynamically-hide-control! @bar))
 
 (defn clear []
   (.setText @find-box-ref "")
@@ -155,7 +155,7 @@
   (.setFocus (doc-state/current :text-box)))
 
 (defn on-escape-pressed []
-  (swt/dynamically-hide-control @bar)
+  (swt/dynamically-hide-control! @bar)
   (.setText @find-box-ref "")
   (on-find-cancelled))
 
@@ -208,7 +208,7 @@
       (.addSelectionListener
        (proxy [SelectionAdapter] []
          (widgetSelected [event]
-           (swt/dynamically-hide-control canvas)
+           (swt/dynamically-hide-control! canvas)
            (clear)
            (on-find-cancelled)))))
 
@@ -250,7 +250,7 @@
   (let [find-bar (create-find-bar @hooks/shell
                                   "Enter text to find..."
                                   "Enter replacement text...")]
-    (.moveAbove find-bar @status-bar/status-bar)
+    (.moveAbove find-bar @hooks/status-bar)
     (.setLayoutData find-bar (let [data (GridData. SWT/FILL SWT/END true false)]
                                ;; This would allow the item to span 2 columns
                                ;; (set! (. data horizontalSpan) 2)

@@ -19,7 +19,7 @@
 (defn log-exception [ex]
   (let [trace-vec (vec (.getStackTrace ex))
         trace-string (apply str (map #(str % "\n") trace-vec))]
-    (io/append-text-file error-log-file-path
+    (io/append-text-file! error-log-file-path
                          (str "CURRENT TIME: " (java.util.Date.) "\n"
                               "CURRENT DOC: " (doc-state/current) "\n"
                               "EXCEPTION: " ex "\n"
@@ -31,7 +31,7 @@
 
 (defn choose-startup-script []
   (let [[dir name] (if (str-not-empty? (@hooks/settings :custom-script-file-path))
-                     (io/get-file-name-parts (@hooks/settings :custom-script-file-path))
+                     (io/get-file-name-parts! (@hooks/settings :custom-script-file-path))
                      ["" ""])
         file-path (file-dialogs/open-dialog
                      "Choose Startup Script"
@@ -39,7 +39,7 @@
                      name)]
     (if file-path
       (do
-        (io/create-empty-file-unless-exists file-path)
+        (io/create-empty-file-unless-exists! file-path)
         (dosync
           (commute hooks/settings assoc
                    :custom-script-file-path file-path))

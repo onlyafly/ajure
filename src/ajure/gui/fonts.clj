@@ -7,9 +7,9 @@
            (org.eclipse.swt.graphics Font FontData))
   (:require (ajure.state [hooks :as hooks])))
 
-(defn get-name-and-height [#^FontData font-data]
+(defn get-name-and-height [^FontData font-data]
   (vector (.getName font-data)
           (.getHeight font-data)))
 
-(defn create-font [#^FontData font-data]
+(defn create-font [^FontData font-data]
   (Font. @hooks/display font-data))

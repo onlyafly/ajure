@@ -17,6 +17,6 @@
 
 (defn run-doc []
   (if (doc-state/current :is-modified)
-    (swt/show-warning-dialog @hooks/shell "Run This Document"
-                             "Please save this doc before running it as a script.")
+    (swt/show-warning-dialog! @hooks/shell "Run This Document"
+                              "Please save this doc before running it as a script.")
     (try-load-file (doc-state/current :file-path))))

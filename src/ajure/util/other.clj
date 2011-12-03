@@ -1,5 +1,4 @@
 ;; ajure.util.other
-;; (Fully refactored)
 ;;
 ;; Should:
 ;;  - Provide generally useful functions
@@ -31,7 +30,7 @@
 (defn str-join [sep sequence]
   (apply str (interpose sep sequence)))
 
-; From http://groups.google.com/group/clojure/browse_frm/thread/4732a53752302fa5?hl=en
+;; From http://groups.google.com/group/clojure/browse_frm/thread/4732a53752302fa5?hl=en
 (defmacro map-method [method coll & args]
   "Calls the given method on each item in the collection."
   `(map (fn [x#] (. x# ~@(if args

@@ -51,14 +51,14 @@
           (= (first item) :item)
             (let [item-title# (first (next item))
                   item-body# (next (next item))]
-              `(swt/create-menu-item ~parent-menu-symbol
-                                     ~item-title#
-                                     (fn [] 
-                                       ~@item-body#)))
+              `(swt/create-menu-item! ~parent-menu-symbol
+                                      ~item-title#
+                                      (fn [] 
+                                        ~@item-body#)))
           ;; Example
           ;; (:sep)
           (= (first item) :sep)
-            `(swt/create-menu-separator ~parent-menu-symbol)
+            `(swt/create-menu-separator! ~parent-menu-symbol)
 
           ;; Example
           ;; (:cond is-showing-colors
@@ -80,7 +80,7 @@
                   cascade-items# (next (next item))
                   cascade-menu-symbol# `cm#]
               `(let [~cascade-menu-symbol#
-                      (swt/create-cascading-sub-menu ~parent-menu-symbol
+                      (swt/create-cascading-sub-menu! ~parent-menu-symbol
                                                      ~cascade-menu-title#)]
                  ~@(generate-menu-children cascade-menu-symbol#
                                            cascade-items#)))
@@ -97,12 +97,12 @@
                   item-body# (next (next (next (next item))))]
               `(do
                  (def-app-combo ~modifiers# ~key# ~@item-body#)
-                 (swt/create-menu-item ~parent-menu-symbol 
-                                       (str ~item-title#
-                                            "\t"
-                                            ~combo-string#)
-                                       (fn [] 
-                                         ~@item-body#))))
+                 (swt/create-menu-item! ~parent-menu-symbol 
+                                        (str ~item-title#
+                                             "\t"
+                                             ~combo-string#)
+                                        (fn [] 
+                                          ~@item-body#))))
             ;; Example
             ;; (:editor-combo "Help"
             ;;                [CTRL] \h
@@ -115,12 +115,12 @@
                     item-body# (next (next (next (next item))))]
                 `(do
                    (def-editor-combo ~modifiers# ~key# ~@item-body#)
-                   (swt/create-menu-item ~parent-menu-symbol 
-                                         (str ~item-title#
-                                              "\t"
-                                              ~combo-string#)
-                                         (fn [] 
-                                           ~@item-body#))))))
+                   (swt/create-menu-item! ~parent-menu-symbol 
+                                          (str ~item-title#
+                                               "\t"
+                                               ~combo-string#)
+                                          (fn [] 
+                                            ~@item-body#))))))
        items))
 
 ;; Example:
@@ -131,7 +131,7 @@
 ;;     (tabs/open-file-in-new-tab file/error-log-file-path)))
 (defmacro def-menu [title & items]
   (let [parent-menu `m#]
-    `(let [~parent-menu (swt/create-sub-menu (deref hooks/shell) 
+    `(let [~parent-menu (swt/create-sub-menu! (deref hooks/shell) 
                                              (deref hooks/menu-bar)
                                              ~title)]
        ~@(generate-menu-children parent-menu items))))
@@ -144,7 +144,7 @@
         index (if (> sub-menu-count 0)
                 (- sub-menu-count 1)
                 0)]
-    `(let [~parent-menu-symbol (swt/create-sub-menu (deref hooks/shell) 
+    `(let [~parent-menu-symbol (swt/create-sub-menu! (deref hooks/shell) 
                                              (deref hooks/menu-bar)
                                              ~title
                                              ~index)]

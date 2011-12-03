@@ -1,8 +1,8 @@
 ;; ajure.util.mac
-;; (Fully refactored)
 ;;
 ;; Should:
-;;  - Mac OS X specific functionality that should not be part of non-mac releases
+;;  - Mac OS X specific functionality that should not be part of non-mac
+;;    releases
 
 (ns ajure.util.mac
   (import (org.eclipse.swt.internal.carbon OS HICommand)
@@ -18,26 +18,28 @@
         (bit-shift-left (int \o) 8)
         (int \u)))
 
+(def callback-proxy
+  (proxy [Object] []
+    (commandProc [next-handler the-event user-data]
+      (if (= (OS/GetEventKind the-event) (OS/kEventProcessCommand))
+        (let [command (HICommand.)]
+          (OS/GetEventParameter the-event OS/kEventParamDirectObject
+                                OS/typeHICommand nil HICommand/sizeof
+                                nil command)
+          (if (= (. command commandID) kHICommandAbout)
+            (handleAboutCommand)
+            OS/eventNotHandledErr))))))
+
 (defn handleAboutCommand []
   (println "about clicked")
   OS/noErr)
 
-(defn hook-app-menu [^org.eclipse.swt.widgets.Display display
-                     ^org.eclipse.swt.widgets.Shell shell]
+(defn hook-app-menu! [^org.eclipse.swt.widgets.Display display
+                      ^org.eclipse.swt.widgets.Shell shell]
   (let [about-menu-item-name "About"
-        target (proxy [Object] []
-                 (commandProc [next-handler the-event user-data]
-                              (if (= (OS/GetEventKind the-event) (OS/kEventProcessCommand))
-                                (let [command (HICommand.)]
-                                  (OS/GetEventParameter the-event OS/kEventParamDirectObject
-                                                        OS/typeHICommand nil HICommand/sizeof
-                                                        nil command)
-                                  (if (= (. command commandID) kHICommandAbout)
-                                    (handleAboutCommand)
-                                    OS/eventNotHandledErr)))))
-        commandCallback (Callback. target "commandProc" 3)
-        commandProcHandle (.getAddress commandCallback)]
-    (if (zero? commandProcHandle)
-      (.dispose commandCallback)
+        command-callback (Callback. callback-proxy "commandProc" 3)
+        command-proc-handle (.getAddress command-callback)]
+    (if (zero? command-proc-handle)
+      (.dispose command-callback)
       ()
       )))

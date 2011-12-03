@@ -43,33 +43,33 @@
 
 (defn create-edit-popup-menu-items [parent-menu]
   (vector
-   (swt/create-menu-item parent-menu "Undo"
-                         #(undo/do-undo (doc-state/current :text-box)
-                                        on-before-history-change
-                                        on-after-history-change))
-   (swt/create-menu-item parent-menu "Redo"
+   (swt/create-menu-item! parent-menu "Undo"
+                          #(undo/do-undo (doc-state/current :text-box)
+                                         on-before-history-change
+                                         on-after-history-change))
+   (swt/create-menu-item! parent-menu "Redo"
                          #(undo/do-redo (doc-state/current :text-box)
                                         on-before-history-change
                                         on-after-history-change))
-   (swt/create-menu-separator parent-menu)
-   (swt/create-menu-item parent-menu "Cut"
+   (swt/create-menu-separator! parent-menu)
+   (swt/create-menu-item! parent-menu "Cut"
                          text/do-cut-text)
-   (swt/create-menu-item parent-menu "Copy"
+   (swt/create-menu-item! parent-menu "Copy"
                          text/do-copy-text)
-   (swt/create-menu-item parent-menu "Paste"
+   (swt/create-menu-item! parent-menu "Paste"
                          text/do-paste-text)
-   (swt/create-menu-separator parent-menu)
-   (swt/create-menu-item parent-menu "Select All"
+   (swt/create-menu-separator! parent-menu)
+   (swt/create-menu-item! parent-menu "Select All"
                          text/do-select-all-text)))
 
 (defn create-popup-menu [shell]
-  (let [menu (swt/create-popup-menu shell)
+  (let [menu (swt/create-popup-menu! shell)
         menu-items (create-edit-popup-menu-items menu)]
     (.setMenu shell menu)
     (dosync (ref-set hooks/popup-menu menu))))
 
 (defn create-menu-bar [shell]
-  (let [menu-bar (swt/create-menu-bar shell)]
+  (let [menu-bar (swt/create-menu-bar! shell)]
     (dosync (ref-set hooks/menu-bar menu-bar))
     (.setMenuBar shell menu-bar)
     menu-bar))
@@ -88,8 +88,8 @@
                                   create-menu-bar
                                   verify-everything-saved-then-close?)]
 
-    (swt/center-shell display shell)
-    (swt/add-file-dropping-to-control @hooks/tab-folder tabs/open-file-paths-in-tabs)
+    (swt/center-shell! display shell)
+    (swt/add-file-dropping-to-control! @hooks/tab-folder tabs/open-file-paths-in-tabs)
     (file-tree/show-file-tree false)
 
     ;; Note that java.io.File does not understand that "~"

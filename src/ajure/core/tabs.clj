@@ -109,9 +109,9 @@
     (undo/do-text-change old-text new-text start length)))
 
 (defn on-text-box-verify-key [event]    
-  (swt/execute-key-combo-in-mappings event
-                                     @access/editor-key-combos
-                                     #(do nil)))
+  (swt/execute-key-combo-in-mappings! event
+                                      @access/editor-key-combos
+                                      #(do nil)))
 
 (defn close-an-unused-tab-if-replaced []
   (let [tabs (tab-folder/all-tabs)]
@@ -161,7 +161,7 @@
 (defn update-recent-files-menu []
   (access/remove-menu-children "File" "Recent Files")
   (doseq [file-path (@hooks/settings :recent-files)]
-    (let [file-name (io/get-file-name-only file-path)]
+    (let [file-name (io/get-file-name-only! file-path)]
       (access/def-append-sub-menu "File" "Recent Files"
                                   (:item file-name
                                          (open-file-in-new-tab file-path))))))
@@ -174,21 +174,21 @@
     ; If the file is not already open, open it in a new tab
     (when file-name
       (cond
-        (not (io/file-exists? file-name))
+        (not (io/file-exists!? file-name))
           (info-dialogs/warn-file-not-exists file-name)
-        (not (io/file-readable? file-name))
+        (not (io/file-readable!? file-name))
           (info-dialogs/warn-file-not-readable file-name)
         :else
-          (if (io/file-readable? file-name)
+          (if (io/file-readable!? file-name)
             (let [[content charset]
-                    (io/read-content-and-charset-of-text-file file-name)
+                    (io/read-content-and-charset-of-text-file! file-name)
                   [tab canvas text numbering] (tab/create-tab file-name
                                                               #(set-modified-status true)
                                                               on-text-box-verify-key
                                                               on-text-box-change
                                                               open-file-paths-in-tabs
                                                               get-style-range-functions)
-                  [dir name] (io/get-file-name-parts file-name)
+                  [dir name] (io/get-file-name-parts! file-name)
                   content-line-endings (text-format/determine-line-endings content)
                   doc-id (doc-state/do-make-doc text 
 				                                numbering
@@ -221,7 +221,7 @@
 
 (defn open-file-paths-in-tabs [file-paths]
   (doseq [path file-paths]
-    (when (io/file-not-directory? path)
+    (when (io/file-not-directory!? path)
       (open-file-in-new-tab path))))
 
 (defn do-new []
@@ -247,7 +247,7 @@
                          old-doc-name)]
          (if file-name
            (do
-             (let [[dir doc-name] (io/get-file-name-parts file-name)]
+             (let [[dir doc-name] (io/get-file-name-parts! file-name)]
                (dosync
                 (commute doc-state/docs
                          update-in [doc-id]
@@ -256,7 +256,7 @@
              (let [endings (doc :endings)
                    charset (doc :character-set)
                    updated-content (text-format/change-line-endings content endings)]
-               (io/write-text-file file-name updated-content charset))
+               (io/write-text-file! file-name updated-content charset))
              (set-modified-status tab-item false)
 
              (recent/add-recent-file file-name)
@@ -278,7 +278,7 @@
              (let [endings (doc :endings)
                    charset (doc :character-set)
                    updated-content (text-format/change-line-endings content endings)]
-               (io/write-text-file file-name updated-content charset))
+               (io/write-text-file! file-name updated-content charset))
              (set-modified-status tab-item false))
            (do-save-as tab-item))))))
 

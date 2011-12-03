@@ -17,7 +17,7 @@
 
       (.addKeyListener
         (proxy [KeyAdapter] []
-          (keyPressed [#^KeyEvent event]
+          (keyPressed [^KeyEvent event]
             ;; Runs when <Esc> is pressed in the box
             (when (= (. event keyCode) (int SWT/ESC))
               (escape-pressed-action)))))

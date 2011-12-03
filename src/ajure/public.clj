@@ -30,7 +30,7 @@
 
 (defn show-msg-box [title msg]
   (let [shell @hooks/shell]
-    (swt/show-info-dialog shell title msg)))
+    (swt/show-info-dialog! shell title msg)))
 
 (defn set-status-msg [msg]
   (status-bar/set-message msg))
