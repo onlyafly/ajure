@@ -62,17 +62,17 @@
   (dosync
     (commute project-item-paths conj path)
     (ref-set is-project-modified true))
-  (file-tree/add-file-name-to-tree @hooks/file-tree path))
+  (file-tree/add-file-name-to-tree! @hooks/file-tree path))
 
 (defn add-paths-to-project [path-vector]
   (doseq [path path-vector]
     (add-path-to-project path)))
 
 (defn show-project-pane []
-  (file-tree/show-file-tree true))
+  (file-tree/show-file-tree! @hooks/sash-form @hooks/tab-folder true))
 
 (defn hide-project-pane []
-  (file-tree/show-file-tree false))
+  (file-tree/show-file-tree! @hooks/sash-form @hooks/tab-folder false))
 
 (defn update-recent-projects-menu []
   (access/remove-menu-children "File" "Recent Projects")
@@ -83,7 +83,7 @@
                                          (open-project file-path))))))
 
 (defn close-current-project []
-  (file-tree/remove-all-tree-items @hooks/file-tree)
+  (file-tree/remove-all-tree-items! @hooks/file-tree)
   (hide-project-pane)
   (dosync
    (ref-set project-file-name nil)
@@ -120,7 +120,7 @@
 
 (defn do-new-project []
   (verify-project-saved-before-action
-   #(let [path (file-dialogs/dir-dialog "Choose a directory for your project...")]
+   #(let [path (file-dialogs/dir-dialog! @hooks/shell "Choose a directory for your project...")]
       (when path
         (close-current-project)
         (show-project-pane)
@@ -128,7 +128,8 @@
 
 (defn do-open-project []
   (verify-project-saved-before-action
-   #(let [file-path (file-dialogs/open-dialog "Open Project"
+   #(let [file-path (file-dialogs/open-dialog! @hooks/shell
+                                              "Open Project"
                                               platform/home-dir ""
                                               dialog-filter-names
                                               dialog-filter-exts)]
@@ -140,7 +141,8 @@
     (let [[initial-dir initial-file-name] (if @project-file-name
                                             (io/get-file-name-parts! @project-file-name)
                                             [platform/home-dir ""])
-          file-name (file-dialogs/save-dialog "Save Project As..."
+          file-name (file-dialogs/save-dialog! @hooks/shell
+                                     		  "Save Project As..."
                                               initial-dir
                                               initial-file-name
                                               dialog-filter-names

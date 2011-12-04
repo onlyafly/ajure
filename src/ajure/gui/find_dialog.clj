@@ -6,7 +6,7 @@
            (org.eclipse.swt.layout GridLayout GridData)
            (org.eclipse.swt.events ShellAdapter)))
 
-(defn create-find-dialog [^Shell parent-shell]
+(defn create-find-dialog! [^Shell parent-shell]
   (let [dialog-shell (Shell. parent-shell (bit-or SWT/DIALOG_TRIM SWT/MODELESS))]
     
     (doto dialog-shell

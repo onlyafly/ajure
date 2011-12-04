@@ -18,8 +18,8 @@
   ;; SWT/SMOOTH only affects Windows, dragging is always smooth in Mac
   (let [sash-form (SashForm. parent (other/bit-or-many SWT/SMOOTH
                                                        SWT/HORIZONTAL))
-        tree (file-tree/create-file-tree sash-form
-                                         double-click-file-in-tree-action)
+        file-tree (file-tree/create-file-tree! sash-form
+                                          double-click-file-in-tree-action)
         tab-folder (tab-folder/create-tab-folder! sash-form
                                                   close-tab-action
                                                   last-tab-closing-action
@@ -29,4 +29,4 @@
       (.setLayout (FillLayout.))
       (.setWeights (int-array [30 70])))
 
-    [sash-form tab-folder]))
+    [sash-form file-tree tab-folder]))

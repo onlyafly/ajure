@@ -12,10 +12,8 @@
                         [editors :as editors]
                         [text :as text])
             (ajure.gui [access :as access]
-                       [application :as application]
                        [info-dialogs :as info-dialogs]
                        [file-tree :as file-tree]
-                       [file-dialogs :as file-dialogs]
                        [sash-form :as sash-form]
                        [status-bar :as status-bar]
                        [fonts :as fonts]
@@ -83,7 +81,8 @@
     app-label :app-label
     doc-label :doc-label
     tab-folder :tab-folder
-    sash-form :sash-form}]
+    sash-form :sash-form
+    file-tree :file-tree}]
   
   (dosync
    (ref-set hooks/shell shell)
@@ -91,7 +90,8 @@
    (ref-set hooks/app-status-label app-label)
    (ref-set hooks/doc-status-label doc-label)
    (ref-set hooks/sash-form sash-form)
-   (ref-set hooks/tab-folder tab-folder)))
+   (ref-set hooks/tab-folder tab-folder)
+   (ref-set hooks/file-tree file-tree)))
 
 (defn show-window [display]
   (let [shell-controls (shell/create-shell! display
@@ -103,19 +103,20 @@
                                             create-menu-bar
                                             verify-everything-saved-then-close?)
         shell (:shell shell-controls)
-        tab-folder (:tab-folder shell-controls)]
+        tab-folder (:tab-folder shell-controls)
+        sash-form (:sash-form shell-controls)]
 
     ;;----- Actions directly on locals
     
     (swt/center-shell! display shell)
     (swt/add-file-dropping-to-control! tab-folder
                                        tabs/open-file-paths-in-tabs)
-
+    
+    (file-tree/show-file-tree! sash-form tab-folder false)
+    
     ;;----- Actions on globals, so must come after hookup of shell controls
     
     (do-hookup-shell-controls shell-controls)
-    
-    (file-tree/show-file-tree false)
 
     ;; Note that java.io.File does not understand that "~"
     ;; equals home directory

@@ -8,10 +8,8 @@
            (org.eclipse.swt.layout GridLayout GridData)
            (org.eclipse.swt.events ShellAdapter)
            (org.eclipse.swt.graphics Image GC))
-  (:require (ajure.gui [application :as application]
-                       [info-dialogs :as info-dialogs]
+  (:require (ajure.gui [info-dialogs :as info-dialogs]
                        [file-tree :as file-tree]
-                       [file-dialogs :as file-dialogs]
                        [sash-form :as sash-form]
                        [status-bar :as status-bar]
                        [fonts :as fonts]
@@ -50,7 +48,7 @@
                                                          close-tab-action
                                                          last-tab-closing-action
                                                          tab-selected-action)
-         [sash-form tab-folder] sash-form-controls
+         [sash-form file-tree tab-folder] sash-form-controls
          [status-bar app-label doc-label] (status-bar/create-status-bar! shell)
          popup-menu (create-popup-menu-action shell)
          menu-bar (create-menu-bar-action shell)]
@@ -88,4 +86,5 @@
       :tab-folder tab-folder
       :status-bar status-bar
       :app-label app-label
+	  :file-tree file-tree
       :doc-label doc-label})))

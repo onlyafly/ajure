@@ -19,6 +19,9 @@
 (def images (ref {}))
 (def colors (ref {}))
 
+(def editor-key-combos (ref {}))
+(def application-key-combos (ref {}))
+
 ;;---------- Unique per shell
 
 (def shell (ref nil))

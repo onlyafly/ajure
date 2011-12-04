@@ -33,7 +33,8 @@
   (let [[dir name] (if (str-not-empty? (@hooks/settings :custom-script-file-path))
                      (io/get-file-name-parts! (@hooks/settings :custom-script-file-path))
                      ["" ""])
-        file-path (file-dialogs/open-dialog
+        file-path (file-dialogs/open-dialog!
+		             @hooks/shell
                      "Choose Startup Script"
                      dir
                      name)]

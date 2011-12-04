@@ -110,7 +110,7 @@
 
 (defn on-text-box-verify-key [event]    
   (swt/execute-key-combo-in-mappings! event
-                                      @access/editor-key-combos
+                                      @hooks/editor-key-combos
                                       #(do nil)))
 
 (defn close-an-unused-tab-if-replaced []
@@ -234,7 +234,7 @@
   (open-blank-file-in-new-tab))
 
 (defn do-open []
-  (let [file-name (file-dialogs/open-dialog "Open" (doc-state/current :directory))]
+  (let [file-name (file-dialogs/open-dialog! @hooks/shell "Open" (doc-state/current :directory))]
     (open-file-in-new-tab file-name)))
 
 (defn do-save-as
@@ -247,7 +247,7 @@
              content (.getText (doc :text-box))
              old-doc-name (doc :doc-name)
              old-doc-dir (doc :directory)
-             file-name (file-dialogs/save-dialog
+             file-name (file-dialogs/save-dialog! @hooks/shell
                         (str "Save <" old-doc-name "> As...")
                         old-doc-dir
                         old-doc-name)]

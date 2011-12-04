@@ -1,4 +1,4 @@
-;; ajure.gui.fonts
+;; fonts
 ;;
 ;; Encapsulates SWT operations on fonts
 

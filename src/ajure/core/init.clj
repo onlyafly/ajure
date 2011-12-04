@@ -11,7 +11,7 @@
                         [project :as project]
                         [editors :as editors]
                         [text :as text])
-            (ajure.gui [application :as application]
+            (ajure.gui [display :as display]
                        [fonts :as fonts]
                        [resources :as resources]
                        [status-bar :as status-bar]
@@ -45,7 +45,7 @@
     (set! (. event doit) should-close)))
 
 (defn application-key-down-action [event]
-  (swt/execute-key-combo-in-mappings! event @access/application-key-combos
+  (swt/execute-key-combo-in-mappings! event @hooks/application-key-combos
                                      #(do
                                         ; Consume the event
                                         (set! (. event doit) false)
@@ -196,7 +196,7 @@
 
 (defn launch-gui [modules-init-action]
   (try
-    (let [display (application/create-display application-close-action
+    (let [display (display/create-display! application-close-action
                                               application-key-down-action)]
 
       ;; Settings should be run first so that the GUI has the settings
