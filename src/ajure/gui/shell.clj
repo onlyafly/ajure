@@ -38,8 +38,6 @@
                      close-tab-action
                      last-tab-closing-action
                      tab-selected-action
-                     create-popup-menu-action
-                     create-menu-bar-action
                      verify-everything-saved-then-close?]
   (io!
    (let [shell (Shell. display)
@@ -49,9 +47,7 @@
                                                          last-tab-closing-action
                                                          tab-selected-action)
          [sash-form file-tree tab-folder] sash-form-controls
-         [status-bar app-label doc-label] (status-bar/create-status-bar! shell)
-         popup-menu (create-popup-menu-action shell)
-         menu-bar (create-menu-bar-action shell)]
+         [status-bar app-label doc-label] (status-bar/create-status-bar! shell)]
 
      ;; Setup layout
      (doto shell

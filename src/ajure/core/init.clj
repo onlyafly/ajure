@@ -41,7 +41,7 @@
 
 ;; Program exit point, called when using Application->Quit or Cmd+Q on Mac
 (defn application-close-action [event]
-  (let [should-close (window/verify-everything-saved-then-close?)]
+  (let [should-close (window/verify-everything-saved-then-close!?)]
     (set! (. event doit) should-close)))
 
 (defn application-key-down-action [event]
@@ -122,28 +122,28 @@
   (def-menu "Edit"
     (:editor-combo "Undo"
                    [MOD1] \z
-                   (undo/do-undo (doc-state/current :text-box)
+                   (undo/do-undo! (doc-state/current :text-box)
                                  on-before-history-change
                                  on-after-history-change))
     (:editor-combo "Redo"
                    [SHIFT MOD1] \z
-                   (undo/do-redo (doc-state/current :text-box)
+                   (undo/do-redo! (doc-state/current :text-box)
                                  on-before-history-change
                                  on-after-history-change))
     (:sep)
     (:editor-combo "Cut"
                    [MOD1] \x
-                   (text/do-cut-text))
+                   (text/cut-text!))
     (:editor-combo "Copy"
                    [MOD1] \c
-                   (text/do-copy-text))
+                   (text/copy-text!))
     (:editor-combo "Paste"
                    [MOD1] \v
-                   (text/do-paste-text))
+                   (text/paste-text!))
     (:sep)
     (:editor-combo "Select All"
                    [MOD1] \a
-                   (text/do-select-all-text))
+                   (text/select-all-text!))
     (:sep)
     (:cascade "Convert File Endings"
               (:item "CRLF (Windows)"
@@ -156,7 +156,7 @@
                      (tabs/change-current-tab-line-endings
                       text-format/line-ending-cr))))
 
-  (text/build-text-menu)
+  (text/build-text-menu!)
 
   (def-menu "Settings"
     (:item "Editor Font..."
@@ -205,7 +205,7 @@
 
       (resources/do-allocate-all! display hooks/images hooks/colors)
 
-      (let [shell (window/show-window display)]
+      (let [shell (window/do-show-window! display)]
         (setup-key-combos)
         (setup-menus)
 

@@ -106,7 +106,7 @@
   (let [new-text (if (zero? length)
                    ""
                    (.getTextRange (doc-state/current :text-box) start length))]
-    (undo/do-text-change old-text new-text start length)))
+    (undo/do-record-text-change old-text new-text start length)))
 
 (defn on-text-box-verify-key [event]    
   (swt/execute-key-combo-in-mappings! event
@@ -248,9 +248,9 @@
              old-doc-name (doc :doc-name)
              old-doc-dir (doc :directory)
              file-name (file-dialogs/save-dialog! @hooks/shell
-                        (str "Save <" old-doc-name "> As...")
-                        old-doc-dir
-                        old-doc-name)]
+                                                  (str "Save <" old-doc-name "> As...")
+                                                  old-doc-dir
+                                                  old-doc-name)]
          (if file-name
            (do
              (let [[dir doc-name] (io/get-file-name-parts! file-name)]
@@ -323,29 +323,30 @@
 (defn verify-all-tabs-saved-before-action [action]
   (if (any-tabs-modified?)
     (info-dialogs/confirm-action! "Warning" "Do you want to save all open docs?"
-                                 do-save-all
-                                 action
-                                 #(do nil))
+                                  do-save-all
+                                  action
+                                  #(do nil))
     (action)))
 
 (defn verify-current-tab-saved-before-action [action]
   (if (doc-state/current :is-modified)
     (info-dialogs/confirm-action! "Warning" "Do you want to save the current doc?"
-                                 do-save
-                                 action
-                                 #(do nil))
+                                  do-save
+                                  action
+                                  #(do nil))
     (action)))
 
-(defn verify-all-tabs-saved-then-close? []
-  (if (any-tabs-modified?)
-    (info-dialogs/confirm-action!
-     "Warning" "Do you want to save all open docs?"
-     #(do
-        (do-save-all)
-        false)
-     (constantly true)
-     (constantly false))
-    true))
+(defn verify-all-tabs-saved-then-close!? []
+  (io!
+   (if (any-tabs-modified?)
+     (info-dialogs/confirm-action! "Warning"
+                                   "Do you want to save all open docs?"
+                                   #(do
+                                      (do-save-all)
+                                      false)
+                                   (constantly true)
+                                   (constantly false))
+     true)))
 
 (defn verify-tab-saved-then-close? [tab-item]
   (if (tab-modified? tab-item)
