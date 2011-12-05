@@ -196,9 +196,16 @@
 
 (defn launch-gui [modules-init-action]
   (try
-    (let [display (display/create-display! application-close-action
-                                              application-key-down-action)]
+    (let [display (display/make-display :application-name "DUDE"
+                                :on-application-quit (constantly true) ;FIXME
+                                :on-key-down (constantly true)) ;FIXME
+          ;; display   (display/create-display! application-close-action
+          ;;                                  application-key-down-action )
+          ]
 
+      (dosync
+       (ref-set hooks/display display))
+      
       ;; Settings should be run first so that the GUI has the settings
       ;; available when it is rendered
       (settings/load-settings)
