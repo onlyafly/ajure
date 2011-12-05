@@ -44,4 +44,4 @@
 
 (defn init []
   (doc-state/do-add-doc-initialization :syntax-highlighting doc-initialization)
-  (tabs/for-each-tab doc-initialization))
+  (tabs/for-each-tab! doc-initialization))

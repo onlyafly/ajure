@@ -39,4 +39,4 @@
   (editors/set-current-word-wrap enable))
 
 (defn open-file [file-path]
-  (tabs/open-file-in-new-tab file-path))
+  (tabs/open-file-in-new-tab! file-path))

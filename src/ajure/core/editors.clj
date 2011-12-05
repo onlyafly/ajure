@@ -17,7 +17,7 @@
   (dosync
     (commute hooks/settings assoc
              :word-wrap-enabled enable))
-  (tabs/for-each-textbox #(.setWordWrap % enable)))
+  (tabs/for-each-textbox! #(.setWordWrap % enable)))
 
 (defn update-settings-from-editor-font []
   (let [font-data @hooks/editor-font-data
@@ -34,7 +34,7 @@
     (ref-set hooks/editor-font-data font-data))
   (text-editor/redraw-line-numbering! (doc-state/current :numbering))
   (let [font (fonts/create-font font-data)]
-    (tabs/for-each-textbox #(.setFont % font))))
+    (tabs/for-each-textbox! #(.setFont % font))))
 
 (defn update-editor-font-from-settings []
   (let [name (@hooks/settings :font-name)

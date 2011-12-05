@@ -37,7 +37,7 @@
 
 (defn- on-after-history-change! []
   (text-editor/resume-change-listening! (doc-state/current :text-box)
-                                        tabs/on-text-box-change))
+                                        tabs/on-text-box-change!))
 
 (defn- attach-edit-popup-menu-items! [parent-menu]
   (io!
@@ -77,7 +77,7 @@
 
 (defn- on-double-click-file-in-tree! [file-object]
   (io!
-   (tabs/open-file-in-new-tab (.getPath file-object))))
+   (tabs/open-file-in-new-tab! (.getPath file-object))))
 
 (defn- do-hookup-controls
   [{shell :shell
@@ -105,9 +105,9 @@
   (io!
    (let [shell-controls (shell/create-shell! display
                                              on-double-click-file-in-tree!
-                                             tabs/verify-tab-saved-then-close?
-                                             tabs/open-blank-file-in-new-tab
-                                             tabs/tab-selected-action
+                                             tabs/verify-tab-saved-then-close!?
+                                             tabs/open-blank-file-in-new-tab!
+                                             tabs/tab-selected-action!
                                              verify-everything-saved-then-close!?)
          shell (:shell shell-controls)
          tab-folder (:tab-folder shell-controls)
@@ -122,7 +122,7 @@
 
      (swt/center-shell! display shell)
      (swt/add-file-dropping-to-control! tab-folder
-                                        tabs/open-file-paths-in-tabs)
+                                        tabs/open-file-paths-in-tabs!)
      
      (file-tree/show-file-tree! sash-form tab-folder false)
      
@@ -133,9 +133,9 @@
      ;; Note that java.io.File does not understand that "~"
      ;; equals home directory
      (if *command-line-args*
-       (tabs/open-file-paths-in-tabs *command-line-args*))
+       (tabs/open-file-paths-in-tabs! *command-line-args*))
 
-     (tabs/open-blank-file-in-new-tab)
+     (tabs/open-blank-file-in-new-tab!)
      
      (shell/show-shell! shell)
 

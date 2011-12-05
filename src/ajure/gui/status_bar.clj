@@ -13,7 +13,7 @@
        (.setText @hooks/current-endings)
        (.update)))))
 
-(defn do-update-current-endings! [endings]
+(defn update-current-endings! [endings]
   (dosync
     (ref-set hooks/current-endings endings))
   (update-doc-status!))

@@ -127,7 +127,7 @@
 ;;   (:item "About Ajure"
 ;;     (info-dialogs/show-about-box!))
 ;;   (:item "Open Error Log"
-;;     (tabs/open-file-in-new-tab file/error-log-file-path)))
+;;     (tabs/open-file-in-new-tab! file/error-log-file-path)))
 (defmacro def-menu [title & items]
   (let [parent-menu `m#]
     `(let [~parent-menu (swt/create-sub-menu! (deref hooks/shell) 

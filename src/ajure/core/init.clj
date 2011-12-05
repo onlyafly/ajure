@@ -28,7 +28,7 @@
         ajure.util.other))
 
 (defn verify-everything-saved-before-action [action]
-  (tabs/verify-all-tabs-saved-before-action
+  (tabs/verify-all-tabs-saved-before-action!
    #(project/verify-project-saved-before-action action)))
 
 ;; Called immediately before program closes
@@ -57,7 +57,7 @@
 
 (defn on-after-history-change []
   (text-editor/resume-change-listening! (doc-state/current :text-box)
-                                        tabs/on-text-box-change))
+                                        tabs/on-text-box-change!))
 
 (defn toggle-word-wrap []
   (let [new-state (not (@hooks/settings :word-wrap-enabled))]
@@ -80,21 +80,21 @@
   (def-menu "File"
     (:app-combo "New"
                 [MOD1] \n
-                (tabs/do-new))
+                (tabs/new!))
     (:app-combo "Open"
                 [MOD1] \o
-                (tabs/do-open))
+                (tabs/open!))
     (:app-combo "Save"
                 [MOD1] \s
-                (tabs/do-save))
+                (tabs/save!))
     (:item "Save As..."
-           (tabs/do-save-as))
+           (tabs/save-as!))
     (:app-combo "Save All"
                 [SHIFT MOD1] \s
-                (tabs/do-save-all))
+                (tabs/save-all!))
     (:app-combo "Close Tab"
                 [MOD1] \w
-                (tabs/verify-tab-saved-and-close))
+                (tabs/verify-tab-saved-and-close!))
     (:sep)
     (:item "New Project"
            (project/do-new-project))
@@ -116,7 +116,7 @@
            (:item "Exit"
                   (do-exit))))
 
-  (tabs/update-recent-files-menu)
+  (tabs/update-recent-files-menu!)
   (project/update-recent-projects-menu)
 
   (def-menu "Edit"
@@ -147,13 +147,13 @@
     (:sep)
     (:cascade "Convert File Endings"
               (:item "CRLF (Windows)"
-                     (tabs/change-current-tab-line-endings
+                     (tabs/change-current-tab-line-endings!
                       text-format/line-ending-crlf))
               (:item "LF (Unix)"
-                     (tabs/change-current-tab-line-endings
+                     (tabs/change-current-tab-line-endings!
                       text-format/line-ending-lf))
               (:item "CR (Mac Classic)"
-                     (tabs/change-current-tab-line-endings
+                     (tabs/change-current-tab-line-endings!
                       text-format/line-ending-cr))))
 
   (text/build-text-menu!)
@@ -175,7 +175,7 @@
     (:item "About Ajure"
            (info-dialogs/show-about-box!))
     (:item "Open Error Log"
-           (tabs/open-file-in-new-tab file/error-log-file-path))))
+           (tabs/open-file-in-new-tab! file/error-log-file-path))))
 
 ;;---------- Main entry point to application
 
