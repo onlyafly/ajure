@@ -1,5 +1,7 @@
 ;; ajure.util.info
 
+;; TODO move module to core package
+
 (ns ajure.util.info)
 
 (def application-name "Ajure")

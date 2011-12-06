@@ -1,64 +1,63 @@
 ;; display
+;; (refactored to layered API)
 
 (ns ajure.gui.display
   (:import (org.eclipse.swt SWT)
            (org.eclipse.swt.widgets Event Display Listener))
-  (:require (ajure.state [hooks :as hooks])
-            (ajure.util [info :as info])))
+  (:require (ajure.util [info :as info]
+                        [swt :as swt])))
 
-(def t1
+;; NOTE: Public only for macro use.
+(defn key-down-handle-event! [event key-combo-mapping]
+  (swt/execute-key-combo-in-mappings! event
+                                      key-combo-mapping
+                                      #(do
+                                         ;; Consume the event
+                                         (set! (. event doit) false)
+                                         ;; Cancel the event
+                                         (set! (. event type) SWT/None))))
+
+(def example-make-display
   '(make-display
     :application-name "Ajure"
-    :on-application-quit (window/verify-everything-saved-then-close!?)
-    :on-key-down (foo)))
+    :on-quit-should-close? window/verify-everything-saved-then-close!?
+    :on-get-key-combos (fn [] {[[SWT/MOD1] \o] open!})))
 
 (defmacro make-display [& body]
   (let [body-map (apply hash-map body)
         {name :application-name
-         on-quit :on-application-quit
-         on-key-down :on-key-down} body-map]
+         on-quit :on-quit-should-close?
+         ;; TODO maybe change key combos so they don't need to
+         ;; reference SWT directly
+         on-get-key-combos :on-get-key-combos} body-map
+        display-sym (gensym "display")]
     `(io!
       
       ;; The app name must be set before the display is created for
       ;; it to take affect on Mac
       (Display/setAppName ~name)
 
-      (let [display# (Display.)]
-        (doto display#
+      (let [~display-sym (Display.)]
 
-          ;; This is called when app is closed with Command-Q in Mac or Alt+F4 in Windows
-          (.addListener SWT/Close
+        ;; Allow :on-quit to be nil
+        ~(when on-quit
+           ;; This is called when app is closed with Command-Q in Mac or Alt+F4 in Windows
+           `(.addListener ~display-sym
+                          SWT/Close
+                          (reify Listener
+                            (handleEvent [this# event#]
+                              (set! (. event# doit) (~on-quit))))))
+
+        ;; Allow on-get-key-combos to be nil
+        ~(when on-get-key-combos
+           ;; Optimized because this is called before every key event
+           ;; in the application
+           
+           `(.addFilter ~display-sym
+                        SWT/KeyDown
                         (reify Listener
                           (handleEvent [this# event#]
-                            (set! (. event# doit) ~on-quit))))
+                            (key-down-handle-event! event#
+                                                    (~on-get-key-combos))))))
 
-          ;; Optimized because this is called before every key event in the application
-          (.addFilter SWT/KeyDown
-                      (reify Listener
-                        (handleEvent [this# event#]
-                          ;;FIXME
-                          ~on-key-down))))
-
-        display#))))
-
-(defn create-display! [close-action key-down-action]
-  (io!
-   ;; The app name must be set before the display is created for
-   ;; it to take affect on Mac
-   (Display/setAppName info/application-name)
-
-   (let [display (Display.)]
-
-     ;; This is called when app is closed with Command-Q in Mac or Alt+F4 in Windows
-     (.addListener display SWT/Close
-                   (reify Listener
-                     (handleEvent [this event]
-                       (close-action event))))
-
-     ;; Optimized because this is called before every key event in the application
-     (.addFilter display SWT/KeyDown
-                 (reify Listener
-                   (handleEvent [this event]
-                     (key-down-action event))))
-
-     display)))
+        ~display-sym))))

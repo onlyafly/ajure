@@ -1,6 +1,6 @@
-;; ajure.core.init
+;; application
 
-(ns ajure.core.init
+(ns ajure.core.application
   (:import (org.eclipse.swt SWT))
   (:require (ajure.core [settings :as settings]
                         [file-utils :as file]
@@ -40,17 +40,9 @@
   (verify-everything-saved-before-action #(.dispose @hooks/shell)))
 
 ;; Program exit point, called when using Application->Quit or Cmd+Q on Mac
-(defn application-close-action [event]
+(defn- on-quit-should-close!? []
   (let [should-close (window/verify-everything-saved-then-close!?)]
-    (set! (. event doit) should-close)))
-
-(defn application-key-down-action [event]
-  (swt/execute-key-combo-in-mappings! event @hooks/application-key-combos
-                                     #(do
-                                        ; Consume the event
-                                        (set! (. event doit) false)
-                                        ; Cancel the event
-                                        (set! (. event type) SWT/None))))
+    should-close))
 
 (defn on-before-history-change []
   (text-editor/pause-change-listening! (doc-state/current :text-box)))
@@ -196,12 +188,10 @@
 
 (defn launch-gui [modules-init-action]
   (try
-    (let [display (display/make-display :application-name "DUDE"
-                                :on-application-quit (constantly true) ;FIXME
-                                :on-key-down (constantly true)) ;FIXME
-          ;; display   (display/create-display! application-close-action
-          ;;                                  application-key-down-action )
-          ]
+    (let [display (display/make-display
+                   :application-name info/application-name
+                   :on-get-key-combos #(@hooks/application-key-combos)
+                   :on-quit-should-close? on-quit-should-close!?)]
 
       (dosync
        (ref-set hooks/display display))

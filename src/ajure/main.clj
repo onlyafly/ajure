@@ -4,8 +4,8 @@
 
 (ns ajure.main
   (:require (ajure [default-modules :as default-modules])
-            (ajure.core [init :as init]))
+            (ajure.core [application :as application]))
   (:gen-class))
 
 (defn -main [& args]
-  (init/launch-gui default-modules/init))
+  (application/launch-gui default-modules/init))
