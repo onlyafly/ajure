@@ -5,6 +5,24 @@
            (org.eclipse.swt.graphics Color Image FontData GC))
   (:require (ajure.gui [fonts :as fonts])))
 
+(declare allocate-images!
+         allocate-colors!
+         release-images!
+         release-colors!)
+
+#_(defn make-resource-bank [display]
+  )
+
+;;---------- Public
+
+(defn allocate-all! [display images-ref colors-ref]
+  (allocate-images! display images-ref)
+  (allocate-colors! display colors-ref))
+
+(defn release-all! [images-ref colors-ref]
+  (release-images! images-ref)
+  (release-colors! colors-ref))
+
 ;;---------- Images
 
 (defn- create-image!
@@ -27,13 +45,13 @@
        (.dispose))
      image)))
 
-(defn- do-allocate-images! [display images-ref]
+(defn- allocate-images! [display images-ref]
   (io!
    (let [images-map {:logo (create-image! display "logo.png")}]
      (dosync
       (ref-set images-ref images-map)))))
 
-(defn- do-release-images! [images-ref]
+(defn- release-images! [images-ref]
   (io!
    (.dispose (@images-ref :logo)))
   (dosync
@@ -42,7 +60,7 @@
 ;;---------- Colors
 
 ;; Any new instantiations of the Color class must be disposed of.
-(defn- do-allocate-colors! [display colors-ref]
+(defn- allocate-colors! [display colors-ref]
   (io!
    (let [colors-map {:light-gray (Color. display 200 200 200)
                      :gray (Color. display 150 150 150)
@@ -57,7 +75,7 @@
      (dosync
       (ref-set colors-ref colors-map)))))
 
-(defn- do-release-colors! [colors-ref]
+(defn- release-colors! [colors-ref]
   (io!
    (.dispose (colors-ref :light-gray))
    (.dispose (colors-ref :gray))
@@ -66,13 +84,3 @@
    (.dispose (colors-ref :azure-dark)))
   (dosync
    (ref-set colors-ref {})))
-
-;;---------- General
-
-(defn do-allocate-all! [display images-ref colors-ref]
-  (do-allocate-images! display images-ref)
-  (do-allocate-colors! display colors-ref))
-
-(defn do-release-all! [images-ref colors-ref]
-  (do-release-images! images-ref)
-  (do-release-colors! colors-ref))

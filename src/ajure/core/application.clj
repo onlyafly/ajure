@@ -18,9 +18,10 @@
                        [text-editor :as text-editor]
                        [info-dialogs :as info-dialogs]
                        [access :as access])
-			(ajure.state [doc-state :as doc-state]
-			             [hooks :as hooks])
-            (ajure.util [swt :as swt]
+            (ajure.state [doc-state :as doc-state]
+                         [hooks :as hooks])
+            (ajure.util [info :as info]
+                        [swt :as swt]
                         [platform :as platform]
                         [text-format :as text-format]))
   (:use (ajure.gui [access :only (def-menu def-append-sub-menu
@@ -33,7 +34,7 @@
 
 ;; Called immediately before program closes
 (defn on-program-closing []
-  (settings/save-settings))
+  (settings/save-settings!))
 
 ;; Program exit point, called by Exit menu item
 (defn do-exit []
@@ -115,13 +116,13 @@
     (:editor-combo "Undo"
                    [MOD1] \z
                    (undo/do-undo! (doc-state/current :text-box)
-                                 on-before-history-change
-                                 on-after-history-change))
+                                  on-before-history-change
+                                  on-after-history-change))
     (:editor-combo "Redo"
                    [SHIFT MOD1] \z
                    (undo/do-redo! (doc-state/current :text-box)
-                                 on-before-history-change
-                                 on-after-history-change))
+                                  on-before-history-change
+                                  on-after-history-change))
     (:sep)
     (:editor-combo "Cut"
                    [MOD1] \x
@@ -157,12 +158,12 @@
            (file/choose-startup-script))
     (:item "Toggle Word Wrap"
            (toggle-word-wrap)))
-      
+  
   (def-menu "Script"
     (:editor-combo "Run This Document"
                    [MOD1] \r
                    (scripts/run-doc)))
-      
+  
   (def-menu "Help"
     (:item "About Ajure"
            (info-dialogs/show-about-box!))
@@ -171,12 +172,12 @@
 
 ;;---------- Main entry point to application
 
-; Action to take on display disposal
+;; Action to take on display disposal
 (defn release-action []
   (on-program-closing)
-  (resources/do-release-all! hooks/images hooks/colors))
+  (resources/release-all! hooks/images hooks/colors))
 
-; Action to take on main loop exception
+;; Action to take on main loop exception
 (defn exception-action [exception]
   (status-bar/set-message!
    (str "Error occured. For details, view error log at "
@@ -190,18 +191,23 @@
   (try
     (let [display (display/make-display
                    :application-name info/application-name
-                   :on-get-key-combos #(@hooks/application-key-combos)
-                   :on-quit-should-close? on-quit-should-close!?)]
+                   :on-get-key-combos (fn [] @hooks/application-key-combos)
+                   :on-quit-should-close? on-quit-should-close!?)
+          ;;images {:logo "logo.png"}
+          ;;resource-bank (resource/make-resource-bank display)
+          ;;i (resources/make-image-resource)
+          ]
 
+      ;; Settings should be run first so that the GUI has the settings
+      ;; available when it is rendered
+      (settings/load-settings!)
+
+      (resources/allocate-all! display hooks/images hooks/colors)
+
+      ;;FIX move this as far down as possible
       (dosync
        (ref-set hooks/display display))
       
-      ;; Settings should be run first so that the GUI has the settings
-      ;; available when it is rendered
-      (settings/load-settings)
-
-      (resources/do-allocate-all! display hooks/images hooks/colors)
-
       (let [shell (window/do-show-window! display)]
         (setup-key-combos)
         (setup-menus)
