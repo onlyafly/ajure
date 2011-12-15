@@ -31,7 +31,7 @@
        ;; Loop until program ends
        (do
          (try
-           (if (not (.readAndDispatch display))
+           (when-not (.readAndDispatch display)
              (.sleep display))
            (catch Exception ex
              (exception-action ex)))
