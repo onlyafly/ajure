@@ -1,7 +1,6 @@
-;; ajure.util.io
+;; io
 ;;
-;; Should
-;;  - Provide functions to operate on files
+;; - Provides functions to operate on files.
 
 (ns ajure.util.io
   (:import (java.io File FileReader BufferedReader FileWriter FileInputStream
@@ -17,7 +16,7 @@
 ;;  - Note that the .map method of channel remains mapped to memory
 ;;    even after the channel is closed.
 ;;    http://bugs.sun.com/view_bug.do?bug_id=4724038
-(defn create-byte-buffer-from-channel-broken! [^FileChannel channel]
+(defn create-byte-buffer-from-channel-BROKEN! [^FileChannel channel]
   (io!
    (.map channel (. FileChannel$MapMode READ_ONLY)
          0 (.size channel))))

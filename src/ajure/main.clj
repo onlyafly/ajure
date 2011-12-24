@@ -1,6 +1,5 @@
-;; ajure.main
-;;
-;; The main entry point of the application.
+;; main
+;; - The main entry point of the application.
 
 (ns ajure.main
   (:require (ajure [default-modules :as default-modules])
@@ -8,4 +7,5 @@
   (:gen-class))
 
 (defn -main [& args]
-  (application/launch-gui default-modules/init))
+  ;;FIX (default-modules/init)
+  (application/start!))

@@ -18,7 +18,7 @@
 
 (defn basic-loop! [^Display display
                    ^Shell shell
-                   release-action exception-action]
+                   & {:keys [on-release on-exception]}]
   (io!
    (loop []
      (if (.isDisposed shell)
@@ -26,7 +26,8 @@
        ;; Program ending
        (do
          (.dispose display)
-         (release-action))
+         (when on-release
+           (on-release)))
        
        ;; Loop until program ends
        (do
@@ -34,7 +35,9 @@
            (when-not (.readAndDispatch display)
              (.sleep display))
            (catch Exception ex
-             (exception-action ex)))
+             (if on-exception
+               (on-exception ex)
+               (throw ex))))
          (recur))))))
 
 (defn create-menu-bar! [shell]

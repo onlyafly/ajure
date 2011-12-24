@@ -1,7 +1,6 @@
-;; ajure.util.other
+;; other
 ;;
-;; Should:
-;;  - Provide generally useful functions
+;; - Provides generally useful functions.
 
 (ns ajure.util.other)
 
@@ -16,12 +15,7 @@
   ([x y & more] (bit-xor x (reduce bit-xor y more))))
 
 (defn any-true? [coll]
-  (loop [c coll]
-    (if c
-      (if (first c)
-        true
-        (recur (next c)))
-      false)))
+  (some identity coll))
 
 (defn str-not-empty? [s]
   (and s

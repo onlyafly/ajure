@@ -1,24 +1,15 @@
 ;; shell
-;;
-;; Shell (window) wrapper.
+;; - Shell (window) wrapper.
 
-(ns ajure.gui.shell
+(ns ajure.cwt.shell
   (:import (org.eclipse.swt SWT)
            (org.eclipse.swt.widgets Shell)
            (org.eclipse.swt.layout GridLayout GridData)
            (org.eclipse.swt.events ShellAdapter)
            (org.eclipse.swt.graphics Image GC))
-  (:require (ajure.gui [info-dialogs :as info-dialogs]
-                       [file-tree :as file-tree]
-                       [sash-form :as sash-form]
-                       [status-bar :as status-bar]
-                       [fonts :as fonts]
-                       [resources :as resources])
-            (ajure.state [hooks :as hooks])
-            (ajure.util [platform :as platform]
+  (:require (ajure.util [platform :as platform]
                         [swt :as swt]
-                        [other :as other]
-                        [info :as info])))
+                        [other :as other])))
 
 (defn- create-shell-grid-layout []
   (let [layout (GridLayout.)]
@@ -29,16 +20,41 @@
     (set! (. layout horizontalSpacing) 0)
     layout))
 
-(defn show-shell! [shell]
+;;---------- Internal
+
+(defn show! [shell]
   (io!
    (.open shell)))
 
-(defn create-shell! [display
-                     double-click-file-in-tree-action
-                     close-tab-action
-                     last-tab-closing-action
-                     tab-selected-action
-                     verify-everything-saved-then-close?]
+(defn make! [& {:keys [display
+                       title
+                       icon
+                       size
+                       on-quit-should-close?]}]
+  (io!
+   (let [shell (Shell. display)
+         [x y] size]
+     (doto shell
+       (.setText title)
+       (.setImage icon)
+
+       ;; Program exit point.
+       ;; This is called when the shell is closed using the X at the top
+       ;; or when Alt+F4 is pressed in Windows
+       (.addShellListener
+        (proxy [ShellAdapter] []
+          (shellClosed [event]
+            (set! (. event doit) (on-quit-should-close?)))))
+       
+       (.setSize x y)))))
+
+;; TODO transition to new versionP
+#_(defn make! [display
+             double-click-file-in-tree-action
+             close-tab-action
+             last-tab-closing-action
+             tab-selected-action
+             verify-everything-saved-then-close?]
   (io!
    (let [shell (Shell. display)
          sash-form-controls (sash-form/create-sash-form! shell
@@ -82,5 +98,5 @@
       :tab-folder tab-folder
       :status-bar status-bar
       :app-label app-label
-	  :file-tree file-tree
+      :file-tree file-tree
       :doc-label doc-label})))

@@ -1,8 +1,7 @@
-;; ajure.util.mac
+;; mac
 ;;
-;; Should:
-;;  - Mac OS X specific functionality that should not be part of non-mac
-;;    releases
+;; - Mac OS X specific functionality that should not be part of non-mac
+;;   releases
 
 (ns ajure.util.mac
   (import (org.eclipse.swt.internal.carbon OS HICommand)

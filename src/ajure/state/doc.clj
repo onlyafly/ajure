@@ -1,6 +1,5 @@
-;; ajure.state.doc
-;;
-;; Document structure and creation helper functions.
+;; doc
+;; - Document structure and creation helper functions.
 
 (ns ajure.state.doc
   (:require (ajure.util [text-format :as text-format])))

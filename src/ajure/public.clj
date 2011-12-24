@@ -1,6 +1,5 @@
-;; ajure.public
-;;
-;; Simple public API.
+;; public
+;; - Simple public API.
 
 (ns ajure.public
   (:import (org.eclipse.swt SWT)

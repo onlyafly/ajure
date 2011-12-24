@@ -1,7 +1,5 @@
 ;; hooks
-;;
-;; Should:
-;;  - Variables to hold objects that need to be accessed globally
+;; - Variables to hold objects that need to be accessed globally.
 
 (ns ajure.state.hooks
   (:require (ajure.util [platform :as platform])))

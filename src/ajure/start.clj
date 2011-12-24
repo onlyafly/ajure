@@ -1,6 +1,5 @@
-;; ajure.start
-;;
-;; Allows the application to be started as a Clojure script.
+;; start
+;; - Allows the application to be started as a Clojure script.
 ;;
 ;; How to use:
 ;;
@@ -15,4 +14,5 @@
   (:require (ajure [default-modules :as default-modules])
             (ajure.core [application :as application])))
 
-(application/launch-gui default-modules/init)
+;;FIX (default-modules/init)
+(application/start!)

@@ -1,6 +1,5 @@
-;; ajure.repl
-;;
-;; Allows the application to be executed and debugged from the REPL.
+;; repl
+;; - Allows the application to be executed and debugged from the REPL.
 ;;
 ;; How to use:
 ;;
@@ -16,12 +15,13 @@
 (ns ajure.repl
   (:require (ajure [default-modules :as default-modules])
             (ajure.core [application :as application])
-			(ajure.state [hooks :as hooks])))
+            (ajure.state [hooks :as hooks])))
 
 ;;---------- REPL launch support
 
 (defn start-gui []
-  (application/launch-gui default-modules/init))
+  ;;FIX (default-modules/init)
+  (application/start!))
 
 ;;---------- REPL debugging support
 
@@ -37,13 +37,13 @@
 ;; execute a command within the thread started above.
 (defmacro exec [& body]
   `(.syncExec (deref hooks/display)
-     (reify Runnable
-       (run [this]
-            ~@body))))
+              (reify Runnable
+                (run [this]
+                  ~@body))))
 
 ;; Does the same as "exec" above, but also prints the result.
 (defmacro pexec [& body]
   `(.syncExec (deref hooks/display)
-     (reify Runnable
-       (run [this]
-            (println ~@body)))))
+              (reify Runnable
+                (run [this]
+                  (println ~@body)))))

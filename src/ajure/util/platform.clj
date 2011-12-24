@@ -1,7 +1,6 @@
-;; ajure.util.platform
+;; platform
 ;;
-;; Should:
-;;  - Manage any OS-level or platform-level differences
+;; - Manages any OS-level or platform-level differences.
 
 (ns ajure.util.platform
   (:import (org.eclipse.swt SWT)

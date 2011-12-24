@@ -1,6 +1,5 @@
-;; ajure.state.doc-state
-;;
-;; State related to open documents.
+;; doc-state
+;; - State related to open documents.
 
 (ns ajure.state.doc-state
   (:require (ajure.state [doc :as doc])))
