@@ -4,6 +4,7 @@
   (:require (ajure.core [info :as info])
             (ajure.state [hooks :as hooks])
             (ajure.cwt [display :as display]
+                       [resources :as resources]
                        [shell :as shell])
             (ajure.util [swt :as swt])))
 
@@ -50,9 +51,13 @@
                       :application-name info/application-name
                       :on-get-key-combos get-key-combos
                       :on-quit-should-close? quit-should-close!?)
+        empty-bank (resources/make-bank! main-display)
+        {bank-with-logo :bank logo-image :image} (resources/get-resource-image-and-bank!
+                                                  empty-bank
+                                                  "logo.png")
         main-shell (shell/make! :display main-display
                                 :title info/application-name
-                                :icon (@hooks/images :logo) ;TODO
+                                :icon logo-image
                                 :size [880 700]
                                 :on-quit-should-close? quit-should-close!?)]
     

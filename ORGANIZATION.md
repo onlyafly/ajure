@@ -50,7 +50,9 @@ _State of the application._
 _A generalized wrapper around SWT. No Ajure-specific functionality nor ties to
 application state._
 
-* **display** - Creates a display for all SWT controls to be created on.
+* **display** - A display represents an application
+* **resources** - Management of resources.
+* **shell** - Shell (window) wrapper
 
 ### ajure.util
 
@@ -118,10 +120,8 @@ _GUI abstraction layer. Wraps all SWT-specific functionality._
 * **find-dialog** - NOT CURRENTLY USED
 * **fonts** - Font support wrapper
 * **info-dialogs** - Informational dialog wrappers
-* **resources** - Management of resources
 * **sash-form** - Form used by file tree in projects
 * **search-text-box** - Search text box wrapper
-* **shell** - Shell (window) wrapper
 * **status-bar** - Status bar wrapper
 * **tab** - Tab wrapper
 * **tab-folder** - Tab folder wrapper
