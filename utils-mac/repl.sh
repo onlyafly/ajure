@@ -10,5 +10,4 @@ java \
   -XstartOnFirstThread \
   -cp .:$SRC_DIR:$RES_DIR:$CLOJURE_JAR:$SWT_JAR \
   clojure.main \
-  src/ajure/start.clj \
   "$@"

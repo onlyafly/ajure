@@ -1,6 +1,7 @@
 pom.xml
 /classes/
 /lib/
+/target/
 /bin/
 ajure-*.jar
 .lein-failures
