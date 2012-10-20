@@ -3,7 +3,8 @@
 (ns ajure.core.application
   (:import (org.eclipse.swt SWT)
            (org.eclipse.swt.layout GridLayout GridData))
-  (:require (ajure.core [info :as info])
+  (:require (ajure.core [info :as info]
+                        [file-utils :as file-utils])
             (ajure.ui [sash-form :as sash-form]
                       [status-bar :as status-bar]
                       [window :as window])
@@ -41,12 +42,12 @@
   )
 
 ;; Action to take on main loop exception
-(defn handle-exception [exception]
+(defn handle-exception! [exception]
   (io!
-   ;;FIX
-   #_(status-bar/set-message!
+   (status-bar/set-message!
     (str "Error occured. For details, view error log at "
-         "<" file/error-log-file-path ">"))
+         "<" file-utils/error-log-file-path ">"))
+   ;;FIX
    #_(file/log-exception exception)
    ;;FIX remove throws before deployment so that exceptions are caught
    (throw exception)))
@@ -79,4 +80,4 @@
       (swt/basic-loop! main-display
                        (:shell window)
                        :on-release #(println "release")
-                       :on-exception handle-exception))))
+                       :on-exception handle-exception!))))

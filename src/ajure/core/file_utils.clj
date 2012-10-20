@@ -1,9 +1,10 @@
 ;; ajure.core.file-utils
 
 (ns ajure.core.file-utils
-  (:require (ajure.core [settings :as settings])
-            (ajure.gui [file-dialogs :as file-dialogs]
-                       [status-bar :as status-bar])
+  (:require (ajure.core ;;FIX[settings :as settings]
+                        )
+            (ajure.ui ;;FIX[file-dialogs :as file-dialogs]
+                      [status-bar :as status-bar])
 			(ajure.state [doc-state :as doc-state]
 			             [hooks :as hooks])
             (ajure.util [io :as io]
@@ -29,7 +30,8 @@
 
 ;;---------- Other
 
-(defn choose-startup-script []
+;;FIX
+#_(defn choose-startup-script []
   (let [[dir name] (if (str-not-empty? (@hooks/settings :custom-script-file-path))
                      (io/get-file-name-parts! (@hooks/settings :custom-script-file-path))
                      ["" ""])
