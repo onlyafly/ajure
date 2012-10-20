@@ -2,7 +2,7 @@
 ;;
 ;; Text editor wrapper.
 
-(ns ajure.gui.text-editor
+(ns ajure.ui.text-editor
   (:import (org.eclipse.swt SWT)
            (org.eclipse.swt.widgets Display Canvas Listener)
            (org.eclipse.swt.custom StyledText StyleRange LineStyleListener
@@ -12,8 +12,8 @@
                                    MenuDetectListener SelectionListener)
            (org.eclipse.swt.layout FormLayout FormData FormAttachment)
            (org.eclipse.swt.graphics GC Font Point Image))
-  (:require (ajure.gui [resources :as resources])
-			(ajure.state [hooks :as hooks])
+  (:require (ajure.state [hooks :as hooks])
+            (ajure.cwt [resources :as resources])
             (ajure.util [swt :as swt]))
   (:use ajure.util.other))
 
@@ -43,12 +43,12 @@
 
          (doto gc
            (.setFont (Font. display @hooks/editor-font-data))
-           (.setBackground (@hooks/colors :light-gray))
+           (.setBackground (resources/get-named-color @hooks/bank :light-gray))
            (.fillRectangle event-x event-y event-width event-height)
-           (.setForeground (@hooks/colors :gray))
+           (.setForeground (resources/get-named-color @hooks/bank :gray))
            (.drawLine (+ event-x event-width -1) 0
                       (+ event-x event-width -1) event-height)
-           (.setForeground (@hooks/colors :black)))
+           (.setForeground (resources/get-named-color @hooks/bank :black)))
 
          (loop [line-num top-line-num]
            (when (< line-num line-count)
@@ -133,14 +133,14 @@
    (.addExtendedModifyListener text-box
                                (create-extended-modify-listener! text-change-action))))
 
-(defn create-text-editor! [display
-                            shell
-                            parent
-                            text-modified-action
-                            verify-key-action
-                            text-change-action
-                            dropped-file-paths-action
-                            get-style-range-functions]
+(defn make! [display
+             shell
+             parent
+             text-modified-action
+             verify-key-action
+             text-change-action
+             dropped-file-paths-action
+             get-style-range-functions]
   (io!
    (let [margin-canvas (Canvas. parent SWT/NONE)
          text-box (StyledText. margin-canvas (swt/options V_SCROLL H_SCROLL))

@@ -1,6 +1,6 @@
 ;; undo
 
-(ns ajure.core.undo
+(ns ajure.ui.undo
   (:require (ajure.state [doc-state :as doc-state])))
 
 (defn- update-for-redo [doc doc-id change]

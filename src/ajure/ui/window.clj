@@ -4,9 +4,11 @@
   (:import (org.eclipse.swt SWT)
            (org.eclipse.swt.layout GridLayout GridData))
   (:require (ajure.core [text :as text]
-                        [undo :as undo])
+                        )
             (ajure.ui [sash-form :as sash-form]
-                      [status-bar :as status-bar])
+                      [status-bar :as status-bar]
+                      [tabs :as tabs]
+                      [undo :as undo])
             (ajure.state [hooks :as hooks]
                          [doc-state :as doc-state])
             (ajure.cwt [display :as display]
@@ -94,6 +96,7 @@
         menu-bar (make-menu-bar! main-shell)]
 
     (dosync
+     (ref-set hooks/display display)
      (ref-set hooks/shell main-shell)
      (ref-set hooks/status-bar status-bar-map)
      (ref-set hooks/app-status-label (:app-label status-bar-map))
@@ -104,5 +107,7 @@
      (ref-set hooks/menu-bar menu-bar)
      (ref-set hooks/popup-menu popup-menu)
      )
+
+    (tabs/open-blank-file-in-new-tab!)
     
     {:shell main-shell}))
