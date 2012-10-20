@@ -5,7 +5,8 @@
            (org.eclipse.swt.layout GridLayout GridData))
   (:require (ajure.core [info :as info])
             (ajure.ui [sash-form :as sash-form]
-                      [status-bar :as status-bar])
+                      [status-bar :as status-bar]
+                      [window :as window])
             (ajure.state [hooks :as hooks])
             (ajure.cwt [display :as display]
                        [resources :as resources]
@@ -59,36 +60,16 @@
         {bank-with-logo :bank logo-image :image} (resources/get-resource-image-and-bank!
                                                   empty-bank
                                                   "logo.png")
-
-        main-shell (shell/make! :display main-display
-                                :title info/application-name
-                                :icon logo-image
-                                :size [880 700]
-                                :on-quit-should-close? quit-should-close!?)
-        sash-form-layout-data (GridData. SWT/FILL SWT/FILL true true)
-        sash-form (sash-form/make! :parent main-shell
-                                   :layout-data sash-form-layout-data
-                                   :on-double-click-file-in-tree nil ;FIX
-                                   :on-close-tab nil ;FIX
-                                   :on-close-last-tab nil ;FIX
-                                   :on-tab-selected nil ;FIX
-                                   )
-        status-bar-layout-data (let [data (GridData. SWT/FILL SWT/END true false)]
-                                 ;; This would allow the item to span 2 columns
-                                 ;; (set! (. data horizontalSpan) 2)
-                                 data)
-        status-bar (status-bar/make! :shell main-shell
-                                     :layout-data status-bar-layout-data)
-       ]
-    
+        window (window/make! :display main-display
+                             :title info/application-name
+                             :icon logo-image
+                             :on-quit-should-close? quit-should-close!?)]
     (println "test")
 
-    ;; TODO move to window
-    (shell/show! main-shell)
-    
+    (window/show! window)    
 
     (swt/basic-loop! main-display
-                     main-shell
+                     (:shell window)
                      :on-release #(println "release")
                      :on-exception handle-exception)
     
