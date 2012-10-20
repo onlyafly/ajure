@@ -14,8 +14,7 @@
 ;; All persistent storage saved in this map
 (def settings (ref {}))
 
-(def images (ref {}))
-(def colors (ref {}))
+(def bank (ref {}))
 
 (def editor-key-combos (ref {}))
 (def application-key-combos (ref {}))

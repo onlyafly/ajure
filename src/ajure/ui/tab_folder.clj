@@ -1,9 +1,9 @@
-(ns ajure.gui.tab-folder
+(ns ajure.ui.tab-folder
   (:import (org.eclipse.swt SWT)
            (org.eclipse.swt.custom CTabFolder CTabFolder2Adapter)
            (org.eclipse.swt.events SelectionAdapter))
-  (:require (ajure.gui [resources :as resources])
-			(ajure.state [hooks :as hooks])
+  (:require (ajure.state [hooks :as hooks])
+            (ajure.cwt [resources :as resources])
             (ajure.util [swt :as swt])))
 
 (defn current-tab []
@@ -15,23 +15,23 @@
 (defn all-tabs []
   (seq (.getItems @hooks/tab-folder)))
 
-(defn create-tab-folder! [parent
-                          close-tab?
-                          last-tab-closing-action
-                          tab-selected-action]
+(defn make! [parent
+             close-tab?
+             last-tab-closing-action
+             tab-selected-action]
   (io!
    (let [tab-folder (CTabFolder. parent SWT/CLOSE)]
 
      ;; Color of selected and non-selected tabs
      (let [colors (into-array 
-                   [(@hooks/colors :azure-light)
-                    (@hooks/colors :azure-medium)
-                    (@hooks/colors :azure-dark)
-                    (@hooks/colors :azure-dark)])
+                   [(resources/get-named-color @hooks/bank :azure-light)
+                    (resources/get-named-color @hooks/bank :azure-medium)
+                    (resources/get-named-color @hooks/bank :azure-dark)
+                    (resources/get-named-color @hooks/bank :azure-dark)])
            percents (int-array [25 50 100])]
        (.setSelectionBackground tab-folder colors percents true))
      
-     (.setBackground tab-folder (@hooks/colors :std-gray))
+     (.setBackground tab-folder (resources/get-named-color @hooks/bank :std-gray))
 
      (doto tab-folder
        ;; Toggles between curvy tabs and square tabs

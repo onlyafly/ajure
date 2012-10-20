@@ -11,7 +11,7 @@
          create-custom-colors!
          dispose-custom-colors!)
 
-;;---------- External
+;;---------- Public
 
 (defn make-bank! [display]
   {:display display
@@ -43,7 +43,7 @@
        (get-in bank [:system-colors color-keyword])
        (get-in bank [:custom-colors color-keyword]))))
 
-;;---------- Internal
+;;---------- Private
 
 (defn- image-in-bank? [bank file-name]
   (boolean (get-in bank [:images file-name])))

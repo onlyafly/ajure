@@ -59,18 +59,24 @@
         empty-bank (resources/make-bank! main-display)
         {bank-with-logo :bank logo-image :image} (resources/get-resource-image-and-bank!
                                                   empty-bank
-                                                  "logo.png")
-        window (window/make! :display main-display
-                             :title info/application-name
-                             :icon logo-image
-                             :on-quit-should-close? quit-should-close!?)]
-    (println "test")
+                                                  "logo.png")]
 
-    (window/show! window)    
-
-    (swt/basic-loop! main-display
-                     (:shell window)
-                     :on-release #(println "release")
-                     :on-exception handle-exception)
+    ;; Setup resources
     
-    ))
+    (dosync
+     (ref-set hooks/bank bank-with-logo))
+
+    ;; Setup GUI
+    
+    (let [window (window/make! :display main-display
+                               :title info/application-name
+                               :icon logo-image
+                               :on-quit-should-close? quit-should-close!?)]
+      (println "test")
+      
+      (window/show! window)
+      
+      (swt/basic-loop! main-display
+                       (:shell window)
+                       :on-release #(println "release")
+                       :on-exception handle-exception))))
