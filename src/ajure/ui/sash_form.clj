@@ -5,8 +5,9 @@
            (org.eclipse.swt.custom SashForm)
            (org.eclipse.swt.layout FillLayout))
   (:require
-   ;;FIX   (ajure.ui [file-tree :as file-tree]
-   ;;[tab-folder :as tab-folder])
+   (ajure.ui [file-tree :as file-tree]
+             ;;FIX[tab-folder :as tab-folder]
+             )
    (ajure.state [hooks :as hooks])
    (ajure.util [other :as other])))
 
@@ -20,9 +21,11 @@
   ;; SWT/SMOOTH only affects Windows, dragging is always smooth in Mac
   (let [sash-form (SashForm. parent (other/bit-or-many SWT/SMOOTH
                                                        SWT/HORIZONTAL))
+
+        file-tree (file-tree/make! sash-form
+                                   on-double-click-file-in-tree)
+
         ;; ;;FIX
-        ;; file-tree (file-tree/create-file-tree! sash-form
-        ;;                                        on-double-click-file-in-tree)
         ;; tab-folder (tab-folder/create-tab-folder! sash-form
         ;;                                           on-close-tab
         ;;                                           on-close-last-tab
@@ -37,6 +40,6 @@
       (.setLayoutData layout-data))
 
     {:sash-form sash-form
-     ;;FIX:file-tree file-tree
+     :file-tree file-tree
      ;;FIX:tab-folder tab-folder
      }))

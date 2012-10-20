@@ -3,7 +3,7 @@
 ;; Implements a lazy file tree.  Children are only loaded when parent
 ;; is expanded.
 
-(ns ajure.gui.file-tree
+(ns ajure.ui.file-tree
   (:import (java.io File)
            (org.eclipse.swt SWT)
            (org.eclipse.swt.graphics Point)
@@ -72,7 +72,7 @@
        (on-tree-expanded! tree-item)
        (.setExpanded tree-item true)))))
 
-(defn create-file-tree! [parent double-click-file-action]
+(defn make! [parent double-click-file-action]
   (io!
    (let [tree (Tree. parent SWT/SINGLE)
          horizontal-scrollbar (.getHorizontalBar tree)

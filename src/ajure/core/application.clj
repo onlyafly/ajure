@@ -48,7 +48,7 @@
     (str "Error occured. For details, view error log at "
          "<" file/error-log-file-path ">"))
    #_(file/log-exception exception)
-   ;;FIXME remove throws before deployment so that exceptions are caught
+   ;;FIX remove throws before deployment so that exceptions are caught
    (throw exception)))
 
 (defn- start-without-exception-handling! []
