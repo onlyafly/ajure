@@ -1,7 +1,10 @@
 ;; application
 
 (ns ajure.core.application
+  (:import (org.eclipse.swt SWT)
+           (org.eclipse.swt.layout GridLayout GridData))
   (:require (ajure.core [info :as info])
+            (ajure.ui [status-bar :as status-bar])
             (ajure.state [hooks :as hooks])
             (ajure.cwt [display :as display]
                        [resources :as resources]
@@ -55,15 +58,24 @@
         {bank-with-logo :bank logo-image :image} (resources/get-resource-image-and-bank!
                                                   empty-bank
                                                   "logo.png")
+
         main-shell (shell/make! :display main-display
                                 :title info/application-name
                                 :icon logo-image
                                 :size [880 700]
-                                :on-quit-should-close? quit-should-close!?)]
+                                :on-quit-should-close? quit-should-close!?)
+        status-bar-layout-data (let [data (GridData. SWT/FILL SWT/END true false)]
+                                 ;; This would allow the item to span 2 columns
+                                 ;; (set! (. data horizontalSpan) 2)
+                                 data)
+        status-bar (status-bar/make! :shell main-shell
+                                     :layout-data status-bar-layout-data)]
     
     (println "test")
-    
+
+    ;; TODO move to window
     (shell/show! main-shell)
+    
 
     (swt/basic-loop! main-display
                      main-shell

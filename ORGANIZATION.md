@@ -37,6 +37,9 @@ state)._
 
 _Combination of CWT functionality with state._
 
+* **window** - The window
+* **status-bar** - The main status bar
+
 ### ajure.state
 
 _State of the application._
