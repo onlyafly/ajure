@@ -32,13 +32,16 @@
   (and (tabs/verify-all-tabs-saved-then-close!?)
        (project/verify-project-saved-then-close!?)))
 
+;; MOVED
 (defn- on-before-history-change! []
   (text-editor/pause-change-listening! (doc-state/current :text-box)))
 
+;; MOVED
 (defn- on-after-history-change! []
   (text-editor/resume-change-listening! (doc-state/current :text-box)
                                         tabs/on-text-box-change!))
 
+;; MOVED
 (defn- attach-edit-popup-menu-items! [parent-menu]
   (io!
    (swt/create-menu-item! parent-menu "Undo"
@@ -62,6 +65,7 @@
    
    nil))
 
+;; MOVED
 (defn- create-popup-menu! [shell]
   (io!
    (let [popup-menu (swt/create-popup-menu! shell)]
@@ -69,6 +73,7 @@
      (.setMenu shell popup-menu)
      popup-menu)))
 
+;; MOVED
 (defn- create-menu-bar! [shell]
   (io!
    (let [menu-bar (swt/create-menu-bar! shell)]
@@ -79,6 +84,7 @@
   (io!
    (tabs/open-file-in-new-tab! (.getPath file-object))))
 
+;; MOVED
 (defn- do-hookup-controls
   [{shell :shell
     status-bar :status-bar
@@ -128,6 +134,7 @@
      
      ;;----- Actions on globals, so must come after hookup of shell controls
      
+     ;; MOVED
      (do-hookup-controls all-controls)
 
      ;; Note that java.io.File does not understand that "~"

@@ -1,8 +1,7 @@
 ;; undo
 
 (ns ajure.core.undo
-  (:require (ajure.state [doc-state :as doc-state])
-            (ajure.gui [text-editor :as text-editor])))
+  (:require (ajure.state [doc-state :as doc-state])))
 
 (defn- update-for-redo [doc doc-id change]
   (->
