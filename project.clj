@@ -5,9 +5,11 @@
       platform (apply format "%s (%s)" (vals properties))
       swt (case platform
             ;; See http://stackoverflow.com/questions/5096299/maven-project-swt-3-5-dependency-any-official-public-repo
-            "Windows 7 (x86)" '[org.eclipse.swt/org.eclipse.swt.win32.win32.x86        "3.8"]
+            "Windows 7 (x86)"    '[org.eclipse.swt/org.eclipse.swt.win32.win32.x86     "3.8"]
+            "Windows 7 (amd64)"  '[org.eclipse.swt/org.eclipse.swt.win32.win32.x86_64  "3.8"]
             "Windows 7 (x86_64)" '[org.eclipse.swt/org.eclipse.swt.win32.win32.x86_64  "3.8"]
-            "Mac OS X (x86_64)"  '[org.eclipse.swt/org.eclipse.swt.cocoa.macosx.x86_64 "3.8"])
+            "Mac OS X (x86_64)"  '[org.eclipse.swt/org.eclipse.swt.cocoa.macosx.x86_64 "3.8"]
+            [])
       start-on-first-thread (case platform
                               "Mac OS (x86_64)" "-XstartOnFirstThread"
                               "")] 
