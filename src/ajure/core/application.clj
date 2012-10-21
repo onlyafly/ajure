@@ -4,8 +4,10 @@
   (:import (org.eclipse.swt SWT)
            (org.eclipse.swt.layout GridLayout GridData))
   (:require (ajure.core [info :as info]
-                        [file-utils :as file-utils])
-            (ajure.ui [project :as project]
+                        [file-utils :as file-utils]
+                        [settings :as settings])
+            (ajure.ui [editors :as editors]
+                      [project :as project]
                       [sash-form :as sash-form]
                       [scripts :as scripts]
                       [status-bar :as status-bar]
@@ -45,6 +47,15 @@
   (let [should-close (verify-everything-saved-then-close!?)]
       should-close))
 
+;; Called immediately before program closes
+(defn on-program-closing! []
+  (settings/save-settings!))
+
+;; Action to take on display disposal
+(defn on-release! []
+  (on-program-closing!)
+  (resources/dispose-bank! @hooks/bank))
+
 ;; Action to take on main loop exception
 (defn handle-exception! [exception]
   (io!
@@ -70,6 +81,10 @@
     (dosync
      (ref-set hooks/bank bank-with-logo))
 
+    ;; Settings should be run first so that the GUI has the settings
+    ;; available when it is rendered
+    (settings/load-settings!)
+
     ;; Setup GUI
     
     (let [window (window/make! :display main-display
@@ -80,12 +95,8 @@
 
       (on-ui-ready)
 
-      ;;FIX
-      #_(
-          
-          ;; Update the GUI from settings where applicable here
-         
-         (editors/update-editor-font-from-settings))
+      ;; Update the GUI from settings where applicable here      
+      (editors/update-editor-font-from-settings)
           
       ;; Run the custom script here so that the script can modify the GUI
       ;; if desired
@@ -97,5 +108,5 @@
       
       (swt/basic-loop! main-display
                        (:shell window)
-                       :on-release #(println "release")
+                       :on-release on-release!
                        :on-exception handle-exception!))))

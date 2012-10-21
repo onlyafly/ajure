@@ -59,7 +59,7 @@
 
 (defn- dispose-images! [bank]
   (io!
-   (doseq [image (bank :images)]
+   (doseq [[key image] (bank :images)]
      (.dispose image))))
 
 (defn- create-system-colors! [display]
@@ -81,7 +81,7 @@
 
 (defn- dispose-custom-colors! [bank]
   (io!
-   (doseq [color (bank :custom-colors)]
+   (doseq [[key color] (bank :custom-colors)]
      (.dispose color))))
 
 ;; TODO Only used as example.
