@@ -5,14 +5,18 @@
            (org.eclipse.swt.layout GridLayout GridData))
   (:require (ajure.core [info :as info]
                         [file-utils :as file-utils])
-            (ajure.ui [sash-form :as sash-form]
+            (ajure.ui [project :as project]
+                      [sash-form :as sash-form]
+                      [scripts :as scripts]
                       [status-bar :as status-bar]
+                      [tabs :as tabs]
                       [window :as window])
             (ajure.state [hooks :as hooks])
             (ajure.cwt [display :as display]
                        [resources :as resources]
                        [shell :as shell])
-            (ajure.util [swt :as swt])))
+            (ajure.util [swt :as swt]))
+  (:use (ajure.util other)))
 
 (declare start-without-exception-handling!)
 
@@ -30,16 +34,16 @@
 ;;---------- Internal
 
 (defn- get-key-combos []
-  @hooks/application-key-combos
-  )
+  @hooks/application-key-combos)
+
+(defn verify-everything-saved-then-close!? []
+  (and (tabs/verify-all-tabs-saved-then-close!?)
+       (project/verify-project-saved-then-close!?)))
 
 ;; Program exit point, called when using Application->Quit or Cmd+Q on Mac
 (defn- quit-should-close!? []
-  ;;FIX
-  #_(let [should-close (window/verify-everything-saved-then-close!?)]
-      should-close)
-  true ;FIX only until above is fixed
-  )
+  (let [should-close (verify-everything-saved-then-close!?)]
+      should-close))
 
 ;; Action to take on main loop exception
 (defn handle-exception! [exception]
@@ -47,8 +51,7 @@
    (status-bar/set-message!
     (str "Error occured. For details, view error log at "
          "<" file-utils/error-log-file-path ">"))
-   ;;FIX
-   #_(file/log-exception exception)
+   (file-utils/log-exception exception)
    ;;FIX remove throws before deployment so that exceptions are caught
    (throw exception)))
 
@@ -81,12 +84,14 @@
       #_(
           
           ;; Update the GUI from settings where applicable here
-          (editors/update-editor-font-from-settings)
+         
+         (editors/update-editor-font-from-settings))
           
-          ;; Run the custom script here so that the script can modify the GUI
-          ;; if desired
-          (when (str-not-empty? (@hooks/settings :custom-script-file-path))
-            (scripts/try-load-file (@hooks/settings :custom-script-file-path))))
+      ;; Run the custom script here so that the script can modify the GUI
+      ;; if desired
+          
+      (when (str-not-empty? (@hooks/settings :custom-script-file-path))
+        (scripts/try-load-file (@hooks/settings :custom-script-file-path)))
       
       (window/show! window)
       

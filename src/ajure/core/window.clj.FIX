@@ -27,7 +27,7 @@
                         [other :as other]
                         [info :as info]))
   (:use (ajure.util other)))
-
+     ;; MOVED
 (defn verify-everything-saved-then-close!? []
   (and (tabs/verify-all-tabs-saved-then-close!?)
        (project/verify-project-saved-then-close!?)))
@@ -80,6 +80,7 @@
      (.setMenuBar shell menu-bar)
      menu-bar)))
 
+     ;; MOVED
 (defn- on-double-click-file-in-tree! [file-object]
   (io!
    (tabs/open-file-in-new-tab! (.getPath file-object))))
@@ -126,10 +127,11 @@
 
      ;;----- Actions directly on locals
 
+     ;;MOVED
      (swt/center-shell! display shell)
      (swt/add-file-dropping-to-control! tab-folder
                                         tabs/open-file-paths-in-tabs!)
-     
+     ;;MOVED                       
      (file-tree/show-file-tree! sash-form tab-folder false)
      
      ;;----- Actions on globals, so must come after hookup of shell controls
@@ -137,13 +139,15 @@
      ;; MOVED
      (do-hookup-controls all-controls)
 
+     ;; MOVED
      ;; Note that java.io.File does not understand that "~"
      ;; equals home directory
      (if *command-line-args*
        (tabs/open-file-paths-in-tabs! *command-line-args*))
 
+     ;; MOVED
      (tabs/open-blank-file-in-new-tab!)
-     
+          ;; MOVED
      (shell/show-shell! shell)
 
      shell)))

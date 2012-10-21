@@ -7,6 +7,7 @@
                         [text :as text]                        
                         )
             (ajure.ui [editors :as editors]
+                      [file-tree :as file-tree]
                       [info-dialogs :as info-dialogs]
                       [project :as project]
                       [sash-form :as sash-form]
@@ -234,6 +235,18 @@
         popup-menu (make-popup-menu! main-shell)
         menu-bar (make-menu-bar! main-shell)]
 
+    ;;----- Actions directly on locals
+    
+    (swt/center-shell! display main-shell)
+    (swt/add-file-dropping-to-control! (:tab-folder sash-form-map)
+                                       tabs/open-file-paths-in-tabs!)
+    
+    (file-tree/show-file-tree! (:sash-form sash-form-map)
+                               (:tab-folder sash-form-map)
+                               false)
+    
+    ;;----- Setup globals
+    
     (dosync
      (ref-set hooks/display display)
      (ref-set hooks/shell main-shell)
@@ -244,12 +257,18 @@
      (ref-set hooks/tab-folder (:tab-folder sash-form-map))
      (ref-set hooks/file-tree (:file-tree sash-form-map))
      (ref-set hooks/menu-bar menu-bar)
-     (ref-set hooks/popup-menu popup-menu)
-     )
-
+     (ref-set hooks/popup-menu popup-menu))
+    
+    ;;----- Actions on globals
+    
     (setup-key-combos!)
     (setup-menus!)
 
+    ;; Note that java.io.File does not understand that "~"
+    ;; equals home directory
+    (if *command-line-args*
+      (tabs/open-file-paths-in-tabs! *command-line-args*))
+    
     (tabs/open-blank-file-in-new-tab!)
     
     {:shell main-shell}))
