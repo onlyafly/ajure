@@ -2,7 +2,7 @@
 ;;
 ;; Encapsulates SWT operations on fonts
 
-(ns ajure.gui.fonts
+(ns ajure.ui.fonts
   (:import (org.eclipse.swt SWT)
            (org.eclipse.swt.graphics Font FontData))
   (:require (ajure.state [hooks :as hooks])))
