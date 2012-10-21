@@ -13,6 +13,7 @@
                       [scripts :as scripts]
                       [status-bar :as status-bar]
                       [tabs :as tabs]
+                      [text-editor :as text-editor]
                       [undo :as undo])
             (ajure.state [hooks :as hooks]
                          [doc-state :as doc-state])
@@ -49,14 +50,17 @@
   (verify-everything-saved-before-action #(.dispose @hooks/shell)))
 
 (defn- on-before-history-change! []
-  ;;FIX(text-editor/pause-change-listening! (doc-state/current :text-box))
+  (text-editor/pause-change-listening! (doc-state/current :text-box))
   )
 
 (defn- on-after-history-change! []
-  ;;FIX
-  #_(text-editor/resume-change-listening! (doc-state/current :text-box)
+  (text-editor/resume-change-listening! (doc-state/current :text-box)
                                         tabs/on-text-box-change!)
   )
+
+(defn- on-double-click-file-in-tree! [file-object]
+  (io!
+   (tabs/open-file-in-new-tab! (.getPath file-object))))
 
 (defn- attach-edit-popup-menu-items! [parent-menu]
   (io!
@@ -216,10 +220,10 @@
         sash-form-layout-data (GridData. SWT/FILL SWT/FILL true true)
         sash-form-map (sash-form/make! :parent main-shell
                                        :layout-data sash-form-layout-data
-                                       :on-double-click-file-in-tree nil ;FIX
-                                       :on-close-tab nil ;FIX
-                                       :on-close-last-tab nil ;FIX
-                                       :on-tab-selected nil ;FIX
+                                       :on-double-click-file-in-tree on-double-click-file-in-tree!
+                                       :on-close-tab tabs/verify-tab-saved-then-close!?
+                                       :on-close-last-tab tabs/open-blank-file-in-new-tab!
+                                       :on-tab-selected tabs/tab-selected-action!
                                        )
         status-bar-layout-data (let [data (GridData. SWT/FILL SWT/END true false)]
                                  ;; This would allow the item to span 2 columns
