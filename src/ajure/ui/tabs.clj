@@ -4,18 +4,19 @@
 (ns ajure.ui.tabs
   (:require (ajure.core
                         ;;FIX[file-utils :as file]
-                        ;;FIX[scripts :as scripts]
-             ;;FIX[recent :as recent]
              )
-            (ajure.ui ;;FIX[file-dialogs :as file-dialogs]
+            (ajure.ui [access :as access]
+                      [file-dialogs :as file-dialogs]
                       ;;FIX[resources :as resources]
-                      ;;FIX[info-dialogs :as info-dialogs]
+                      [info-dialogs :as info-dialogs]
+                      [recent :as recent]
+                      [scripts :as scripts]
                       [status-bar :as status-bar]
-                      ;;FIX[text-editor :as text-editor]
+                      [text-editor :as text-editor]
                       [tab :as tab]
                       [tab-folder :as tab-folder]
                       [undo :as undo]
-             ;;FIX[access :as access]
+                      
              )
             (ajure.state [doc-state :as doc-state]
                          [hooks :as hooks])
@@ -65,28 +66,24 @@
        (io!
         (update-tab-text! tab)))))
 
-;;FIX
-#_(defn- get-all-tabs-data-values [key]
+(defn- get-all-tabs-data-values [key]
   (let [tabs (tab-folder/all-tabs)
         items (map #(key (@doc-state/docs (.getData %)))
                    tabs)]
     items))
 
-;;FIX
-#_(defn for-each-textbox! [action]
+(defn for-each-textbox! [action]
   (io!
    (let [textboxes (get-all-tabs-data-values :text-box)]
      (doseq [textbox textboxes]
        (action textbox)))))
 
-;;FIX
-#_(defn- get-all-open-doc-ids []
+(defn- get-all-open-doc-ids []
   (let [tabs (tab-folder/all-tabs)
         doc-ids (map #(.getData %) tabs)]
     doc-ids))
 
-;;FIX
-#_(defn for-each-tab! [action]
+(defn for-each-tab! [action]
   (io!
    (let [doc-ids (get-all-open-doc-ids)]
      (dosync
@@ -94,15 +91,13 @@
         (commute doc-state/docs
                  update-in [doc-id] action))))))
 
-;;FIX
-#_(defn tab-selected-action! [selected-tab]
+(defn tab-selected-action! [selected-tab]
   (io!
    (doc-state/do-set-current-doc-id (.getData selected-tab))
    (.setFocus (doc-state/current :text-box))
    (update-tab-status! selected-tab)))
 
-;;FIX
-#_(defn- select-tab-with-file-path! [file-path]
+(defn- select-tab-with-file-path! [file-path]
   (io!
    (loop [tabs (tab-folder/all-tabs)]
      (let [tab (first tabs)
@@ -128,8 +123,7 @@
                                       @hooks/editor-key-combos
                                       #(do nil)))
 
-;;FIX
-#_(defn- close-an-unused-tab-if-replaced! []
+(defn- close-an-unused-tab-if-replaced! []
   (io!
    (let [tabs (tab-folder/all-tabs)]
      ;; We only want to close an unused tab if there are two tabs:
@@ -173,14 +167,12 @@
     (doc-state/do-set-current-doc-id doc-id)
     (update-tab-status! tab)))
 
-;;FIX
-#_(defn- file-already-open? [file-path]
+(defn- file-already-open? [file-path]
   (let [opened-file-paths (get-all-tabs-data-values :file-path)
         matching-file-paths (map #(= file-path %) opened-file-paths)]
     (any-true? matching-file-paths)))
 
-;;FIX
-#_(defn update-recent-files-menu! []
+(defn update-recent-files-menu! []
   (io!
    (access/remove-menu-children "File" "Recent Files")
    (doseq [file-path (@hooks/settings :recent-files)]
@@ -189,8 +181,7 @@
          (:item file-name
                 (open-file-in-new-tab! file-path)))))))
 
-;;FIX
-#_(defn open-file-in-new-tab! [file-name]
+(defn open-file-in-new-tab! [file-name]
   (io!
    (if (file-already-open? file-name)
      ;; If the file is already open, bring its tab to the front
@@ -207,7 +198,7 @@
         (if (io/file-readable!? file-name)
           (let [[content charset]
                 (io/read-content-and-charset-of-text-file! file-name)
-                [tab canvas text numbering] (tab/create-tab! @hooks/display
+                [tab canvas text numbering] (tab/make! @hooks/display
                                                              @hooks/shell
                                                              @hooks/tab-folder
                                                              file-name
@@ -247,26 +238,22 @@
 
             (close-an-unused-tab-if-replaced!))))))))
 
-;;FIX
-#_(defn open-file-paths-in-tabs! [file-paths]
+(defn open-file-paths-in-tabs! [file-paths]
   (io!
    (doseq [path file-paths]
      (when (io/file-not-directory!? path)
        (open-file-in-new-tab! path)))))
 
-;;FIX
-#_(defn new! []
+(defn new! []
   (open-blank-file-in-new-tab!))
 
-;;FIX
-#_(defn open! []
+(defn open! []
   (let [file-name (file-dialogs/open-dialog! @hooks/shell
                                              "Open"
                                              (doc-state/current :directory))]
     (open-file-in-new-tab! file-name)))
 
-;;FIX
-#_(defn save-as!
+(defn save-as!
   ([]
      (save-as! (tab-folder/current-tab)))
   ([tab-item]
@@ -298,8 +285,7 @@
               (recent/add-recent-file file-name)
               (update-recent-files-menu!))))))))
 
-;;FIX
-#_(defn save!
+(defn save!
   ;; Save the current tab item
   ([]
      (save! (tab-folder/current-tab)))
@@ -320,8 +306,7 @@
               (set-modified-status! tab-item false))
             (save-as! tab-item)))))))
 
-;;FIX
-#_(defn save-all! []
+(defn save-all! []
   (io!
    (loop [tabs (tab-folder/all-tabs)]
      (doseq [tab tabs]
@@ -331,8 +316,7 @@
          (if is-modified
            (save! tab)))))))
 
-;;FIX
-#_(defn- tab-modified?
+(defn- tab-modified?
   ([]
      (tab-modified? (tab-folder/current-tab)))
   ([tab-item]
@@ -341,15 +325,13 @@
            is-modified (doc :is-modified)]
        is-modified)))
 
-;;FIX
-#_(defn- any-tabs-modified? []
+(defn- any-tabs-modified? []
   (let [modified-states (get-all-tabs-data-values :is-modified)]
     (if (any-true? modified-states)
       true
       false)))
 
-;;FIX
-#_(defn change-current-tab-line-endings! [line-endings]
+(defn change-current-tab-line-endings! [line-endings]
   (let [tab (tab-folder/current-tab)
         doc-id (.getData tab)]
     (dosync
@@ -358,8 +340,7 @@
     (io!
      (update-tab-status! tab))))
 
-;;FIX
-#_(defn verify-all-tabs-saved-before-action! [action]
+(defn verify-all-tabs-saved-before-action! [action]
   (io!
    (if (any-tabs-modified?)
      (info-dialogs/confirm-action! "Warning" "Do you want to save all open docs?"
@@ -368,8 +349,7 @@
                                    #(do nil))
      (action))))
 
-;;FIX
-#_(defn- verify-current-tab-saved-before-action! [action]
+(defn- verify-current-tab-saved-before-action! [action]
   (io!
    (if (doc-state/current :is-modified)
      (info-dialogs/confirm-action! "Warning" "Do you want to save the current doc?"
@@ -378,8 +358,7 @@
                                    #(do nil))
      (action))))
 
-;;FIX
-#_(defn verify-all-tabs-saved-then-close!? []
+(defn verify-all-tabs-saved-then-close!? []
   (io!
    (if (any-tabs-modified?)
      (info-dialogs/confirm-action! "Warning"
@@ -391,8 +370,7 @@
                                    (constantly false))
      true)))
 
-;;FIX
-#_(defn verify-tab-saved-then-close!? [tab-item]
+(defn verify-tab-saved-then-close!? [tab-item]
   (io!
    (if (tab-modified? tab-item)
      (info-dialogs/confirm-action! "Warning"
@@ -404,8 +382,7 @@
                                    (constantly false))
      true)))
 
-;;FIX
-#_(defn verify-tab-saved-and-close! []
+(defn verify-tab-saved-and-close! []
   (io!
    (let [tab-item (tab-folder/current-tab)
          close-fn (fn []

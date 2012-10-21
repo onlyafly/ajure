@@ -3,7 +3,7 @@
 ;; Should:
 ;;  - Provide functions for getting information back from file dialogs
 
-(ns ajure.gui.file-dialogs
+(ns ajure.ui.file-dialogs
   (:import (org.eclipse.swt SWT)
            (org.eclipse.swt.widgets FileDialog DirectoryDialog))
   (:use (ajure.state [hooks :as hooks])

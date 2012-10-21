@@ -1,16 +1,18 @@
-;; ajure.core.project
+;; project
 
-(ns ajure.core.project
-  (:require (ajure.core [scripts :as scripts]
-                        [recent :as recent])
-            (ajure.gui [file-tree :as file-tree]
-                       [file-dialogs :as file-dialogs]
-                       [info-dialogs :as info-dialogs]
-                       [status-bar :as status-bar]
-                       [access :as access])
+(ns ajure.ui.project
+  (:require (ajure.core 
+                        )
+            (ajure.ui [access :as access]
+                      [file-tree :as file-tree]
+                      [file-dialogs :as file-dialogs]
+                      [info-dialogs :as info-dialogs]
+                      [recent :as recent]
+                      [scripts :as scripts]
+                      [status-bar :as status-bar]
+                      )
             (ajure.state [hooks :as hooks])
             (ajure.util [io :as io]
-                        [info :as info]
                         [platform :as platform]
                         [swt :as swt])))
 
@@ -97,7 +99,7 @@
   (io/write-text-file! file-name
                        (with-out-str
                          (let []
-                           (println ";; Ajure project file, version:" info/version-number-string)
+                           ;;FIX(println ";; Ajure project file, version:" info/version-number-string)
                            (println ";; Automatically generated file.  Modify with care.")
                            (newline)
                            (prn `(use 'ajure.core.project))

@@ -3,7 +3,7 @@
 ;; Should
 ;;  - Store key-combo mappings, menu-items, and menu-item accelerators
 
-(ns ajure.gui.access
+(ns ajure.ui.access
   (:require (ajure.state [hooks :as hooks])
             (ajure.util [swt :as swt])))
 

@@ -1,7 +1,7 @@
-;; ajure.core.scripts
+;; scripts
 
-(ns ajure.core.scripts
-  (:require (ajure.gui [status-bar :as status-bar])
+(ns ajure.ui.scripts
+  (:require (ajure.ui [status-bar :as status-bar])
 			(ajure.state [doc-state :as doc-state]
 			             [hooks :as hooks])
             (ajure.util [swt :as swt])))

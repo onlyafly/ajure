@@ -1,13 +1,13 @@
-;; ajure.core.editors
+;; ajure.ui.editors
 ;;
 ;; Should Do:
 ;;  - Operations related to the text editors
 
-(ns ajure.core.editors
+(ns ajure.ui.editors
   (:import (org.eclipse.swt.graphics FontData))
-  (:require (ajure.core [tabs :as tabs])
-            (ajure.gui [text-editor :as text-editor]
-                       [fonts :as fonts])
+  (:require (ajure.ui [tabs :as tabs]
+                      [text-editor :as text-editor]
+                      [fonts :as fonts])
             (ajure.state [hooks :as hooks]
                          [doc-state :as doc-state])
             (ajure.util [swt :as swt]))

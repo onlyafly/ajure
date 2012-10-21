@@ -1,4 +1,4 @@
-(ns ajure.core.recent
+(ns ajure.ui.recent
   (:require (ajure.state [hooks :as hooks])
             (ajure.util [queue :as queue])))
 
