@@ -2,12 +2,12 @@
 
 (ns ajure.ui.info-dialogs
   (:import (org.eclipse.swt SWT))
-  (:require (ajure.state [hooks :as hooks])
+  (:require (ajure.ui [info :as info])
+            (ajure.state [hooks :as hooks])
             (ajure.util [swt :as swt])))
 
 (defn show-about-box! []
-  ;;FIX
-  #_(io!
+  (io!
    (swt/show-info-dialog! @hooks/shell
                           "About Ajure"
                           (str "Ajure Editor " info/version-number-string "\n"
