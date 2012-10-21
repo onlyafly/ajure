@@ -33,7 +33,7 @@
 (def find-case-sensitive (ref false))
 
 ;; Status Bar
-(def status-bar (ref nil))
+(def status-bar-widget (ref nil))
 (def app-status-label (ref nil))
 (def doc-status-label (ref nil))
 

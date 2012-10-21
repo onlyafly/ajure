@@ -237,7 +237,7 @@
     (dosync
      (ref-set hooks/display display)
      (ref-set hooks/shell main-shell)
-     (ref-set hooks/status-bar status-bar-map)
+     (ref-set hooks/status-bar-widget (:canvas status-bar-map))
      (ref-set hooks/app-status-label (:app-label status-bar-map))
      (ref-set hooks/doc-status-label (:doc-label status-bar-map))
      (ref-set hooks/sash-form (:sash-form sash-form-map))

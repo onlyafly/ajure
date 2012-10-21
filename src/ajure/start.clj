@@ -14,5 +14,4 @@
   (:require (ajure [default-modules :as default-modules])
             (ajure.core [application :as application])))
 
-;;FIX (default-modules/init)
-(application/start!)
+(application/start! :on-ui-ready default-modules/init)

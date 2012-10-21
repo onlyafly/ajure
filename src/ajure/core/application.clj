@@ -18,11 +18,11 @@
 
 ;;---------- External
 
-(defn start! []
+(defn start! [& {:keys [on-ui-ready]}]
   (try
-    (start-without-exception-handling!)
+    (start-without-exception-handling! :on-ui-ready on-ui-ready)
     (catch Exception exc
-      ;;FIX (file-utils/log-exception exc)
+      (file-utils/log-exception exc)
       ;;FIX remove throws before deployment so that exceptions are caught
       (throw exc)
       )))
@@ -30,7 +30,7 @@
 ;;---------- Internal
 
 (defn- get-key-combos []
-  ;;FIX @hooks/application-key-combos
+  @hooks/application-key-combos
   )
 
 ;; Program exit point, called when using Application->Quit or Cmd+Q on Mac
@@ -52,7 +52,7 @@
    ;;FIX remove throws before deployment so that exceptions are caught
    (throw exception)))
 
-(defn- start-without-exception-handling! []
+(defn- start-without-exception-handling! [& {:keys [on-ui-ready]}]
   (let [main-display (display/make!
                       :application-name info/application-name
                       :on-get-key-combos get-key-combos
@@ -74,6 +74,19 @@
                                :icon logo-image
                                :on-quit-should-close? quit-should-close!?)]
       (println "test")
+
+      (on-ui-ready)
+
+      ;;FIX
+      #_(
+          
+          ;; Update the GUI from settings where applicable here
+          (editors/update-editor-font-from-settings)
+          
+          ;; Run the custom script here so that the script can modify the GUI
+          ;; if desired
+          (when (str-not-empty? (@hooks/settings :custom-script-file-path))
+            (scripts/try-load-file (@hooks/settings :custom-script-file-path))))
       
       (window/show! window)
       

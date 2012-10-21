@@ -20,8 +20,7 @@
 ;;---------- REPL launch support
 
 (defn start-gui []
-  ;;FIX (default-modules/init)
-  (application/start!))
+  (application/start! :on-ui-ready default-modules/init))
 
 ;;---------- REPL debugging support
 

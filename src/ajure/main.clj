@@ -7,5 +7,4 @@
   (:gen-class))
 
 (defn -main [& args]
-  ;;FIX (default-modules/init)
-  (application/start!))
+  (application/start! :on-ui-ready default-modules/init))

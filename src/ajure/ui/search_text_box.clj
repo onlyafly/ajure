@@ -1,6 +1,6 @@
 ;; search-text-box
 
-(ns ajure.gui.search-text-box
+(ns ajure.ui.search-text-box
   (:import (org.eclipse.swt SWT)
            (org.eclipse.swt.widgets Text)
            (org.eclipse.swt.events SelectionAdapter KeyAdapter KeyEvent))
