@@ -5,17 +5,19 @@
   (:import (org.eclipse.swt SWT)
            (org.eclipse.swt.graphics Font FontData))
   (:require (ajure.core [settings :as settings]
-                        [file-utils :as file]
-                        [scripts :as scripts]
-                        [window :as window]
-                        [editors :as editors]
-                        [tabs :as tabs]
-                        [recent :as recent]
-                        [project :as project])
-            (ajure.gui [status-bar :as status-bar])
+                        [file-utils :as file-utils]
+                        )
+            (ajure.ui [editors :as editors]
+                      [info :as info]
+                      [project :as project]
+                      [recent :as recent]
+                      [scripts :as scripts]
+                      [status-bar :as status-bar]
+                      [tabs :as tabs]
+                      [window :as window])
 			(ajure.state [hooks :as hooks])
             (ajure.util [swt :as swt]
-                        [info :as info])))
+                        )))
 
 (defn set-font [name size]
   (dosync

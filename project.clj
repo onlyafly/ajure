@@ -11,7 +11,7 @@
             "Mac OS X (x86_64)"  '[org.eclipse.swt/org.eclipse.swt.cocoa.macosx.x86_64 "3.8"]
             '[])
       start-on-first-thread (case platform
-                              "Mac OS (x86_64)" "-XstartOnFirstThread"
+                              "Mac OS X (x86_64)" "-XstartOnFirstThread"
                               "")] 
 
   (defproject ajure "0.5.1-dev"
