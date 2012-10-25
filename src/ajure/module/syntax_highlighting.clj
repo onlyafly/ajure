@@ -14,11 +14,10 @@
                       [search-text-box :as stb])
             (ajure.state [doc-state :as doc-state]
 			             [hooks :as hooks])
-            (ajure.cwt [resources :as resources])
-			(ajure.util 
-                        [swt :as swt]))
+            (ajure.cwt [resources :as resources]
+                       [swt :as swt]))
   (:use (ajure.ui [access :only (def-new-menu def-append-menu)])
-        (ajure.util other)))
+        (ajure.other misc)))
 
 (defn- get-keyword-style-range [begin len]
   (let [range (StyleRange.)]

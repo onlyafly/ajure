@@ -3,7 +3,7 @@
 ;; - Mac OS X specific functionality that should not be part of non-mac
 ;;   releases
 
-(ns ajure.util.mac
+(ns ajure.os.mac
   (import
    ;;TODO (org.eclipse.swt.internal.carbon OS HICommand)
    ;;TODO(org.eclipse.swt.internal Callback)

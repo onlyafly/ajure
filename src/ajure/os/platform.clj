@@ -2,11 +2,11 @@
 ;;
 ;; - Manages any OS-level or platform-level differences.
 
-(ns ajure.util.platform
+(ns ajure.os.platform
   (:import (org.eclipse.swt SWT)
            (org.eclipse.swt.widgets Display)
            (org.eclipse.swt.graphics Font FontData))
-  (:use ajure.util.other))
+  (:use ajure.other.misc))
 
 (def is-mac-os
      (not= (System/getProperty "mrj.version") nil))

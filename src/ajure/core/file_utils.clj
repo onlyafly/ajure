@@ -7,10 +7,10 @@
                       [status-bar :as status-bar])
 			(ajure.state [doc-state :as doc-state]
 			             [hooks :as hooks])
-            (ajure.util [io :as io]
-                        [swt :as swt]
-                        [platform :as platform]))
-  (:use ajure.util.other))
+            (ajure.cwt [swt :as swt])
+            (ajure.io [file-io :as file-io])
+            (ajure.os [platform :as platform]))
+  (:use ajure.other.misc))
 
 ;;---------- Error logging
 
@@ -20,7 +20,7 @@
 (defn log-exception [ex]
   (let [trace-vec (vec (.getStackTrace ex))
         trace-string (apply str (map #(str % "\n") trace-vec))]
-    (io/append-text-file! error-log-file-path
+    (file-io/append-text-file! error-log-file-path
                          (str "CURRENT TIME: " (java.util.Date.) "\n"
                               "CURRENT DOC: " (doc-state/current) "\n"
                               "EXCEPTION: " ex "\n"
@@ -32,7 +32,7 @@
 
 (defn choose-startup-script []
   (let [[dir name] (if (str-not-empty? (@hooks/settings :custom-script-file-path))
-                     (io/get-file-name-parts! (@hooks/settings :custom-script-file-path))
+                     (file-io/get-file-name-parts! (@hooks/settings :custom-script-file-path))
                      ["" ""])
         file-path (file-dialogs/open-dialog!
 		             @hooks/shell
@@ -41,7 +41,7 @@
                      name)]
     (if file-path
       (do
-        (io/create-empty-file-unless-exists! file-path)
+        (file-io/create-empty-file-unless-exists! file-path)
         (dosync
           (commute hooks/settings assoc
                    :custom-script-file-path file-path))

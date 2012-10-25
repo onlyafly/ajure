@@ -2,7 +2,7 @@
 ;; - Variables to hold objects that need to be accessed globally.
 
 (ns ajure.state.hooks
-  (:require (ajure.util [platform :as platform])))
+  (:require (ajure.os [platform :as platform])))
 
 ;;---------- Unique per application
 

@@ -1,16 +1,16 @@
-;; io
+;; file-io
 ;;
 ;; - Provides functions to operate on files.
 
-(ns ajure.util.io
+(ns ajure.io.file-io
   (:import (java.io File FileReader BufferedReader FileWriter FileInputStream
                     StringWriter FileOutputStream BufferedWriter
                     OutputStreamWriter)
            (java.nio ByteBuffer CharBuffer)
            (java.nio.charset Charset)
            (java.nio.channels FileChannel FileChannel$MapMode))
-  (:require (ajure.util [text-format :as text-format]))
-  (:use ajure.util.other))
+  (:require (ajure.io [text-format :as text-format]))
+  (:use ajure.other.misc))
 
 ;; Issues:
 ;;  - Note that the .map method of channel remains mapped to memory

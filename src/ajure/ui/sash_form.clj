@@ -8,7 +8,7 @@
    (ajure.ui [file-tree :as file-tree]
              [tab-folder :as tab-folder])
    (ajure.state [hooks :as hooks])
-   (ajure.util [other :as other])))
+   (ajure.other [misc :as misc])))
 
 (defn make! [& {:keys [parent
                       layout-data
@@ -18,7 +18,7 @@
                       on-tab-selected]}]
   
   ;; SWT/SMOOTH only affects Windows, dragging is always smooth in Mac
-  (let [sash-form (SashForm. parent (other/bit-or-many SWT/SMOOTH
+  (let [sash-form (SashForm. parent (misc/bit-or-many SWT/SMOOTH
                                                        SWT/HORIZONTAL))
         file-tree (file-tree/make! sash-form
                                    on-double-click-file-in-tree)

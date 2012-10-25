@@ -3,10 +3,10 @@
 (ns ajure.core.application
   (:import (org.eclipse.swt SWT)
            (org.eclipse.swt.layout GridLayout GridData))
-  (:require (ajure.core [info :as info]
-                        [file-utils :as file-utils]
+  (:require (ajure.core [file-utils :as file-utils]
                         [settings :as settings])
             (ajure.ui [editors :as editors]
+                      [info :as info]
                       [project :as project]
                       [sash-form :as sash-form]
                       [scripts :as scripts]
@@ -16,9 +16,9 @@
             (ajure.state [hooks :as hooks])
             (ajure.cwt [display :as display]
                        [resources :as resources]
-                       [shell :as shell])
-            (ajure.util [swt :as swt]))
-  (:use (ajure.util other)))
+                       [shell :as shell]
+                       [swt :as swt]))
+  (:use (ajure.other misc)))
 
 (declare start-without-exception-handling!)
 

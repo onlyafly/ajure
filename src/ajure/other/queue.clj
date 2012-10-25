@@ -5,7 +5,7 @@
 ;; be printed out as a vector when the settings file is output. The
 ;; inefficiency here is okay because these operations are rarely performed.
 
-(ns ajure.util.queue)
+(ns ajure.other.queue)
 
 (defn- vector-or-nil? [v]
   (or (vector? v)

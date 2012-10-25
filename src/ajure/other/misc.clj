@@ -1,8 +1,8 @@
-;; other
+;; misc
 ;;
 ;; - Provides generally useful functions.
 
-(ns ajure.util.other)
+(ns ajure.other.misc)
 
 (defn bit-or-many
   ([x] x)

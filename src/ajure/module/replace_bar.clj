@@ -14,11 +14,11 @@
                       [search-text-box :as stb])
             (ajure.state [doc-state :as doc-state]
 			             [hooks :as hooks])
-            (ajure.cwt [resources :as resources])
-			(ajure.util [swt :as swt]))
+            (ajure.cwt [resources :as resources]
+                       [swt :as swt]))
   (:use (clojure.contrib [core :only (dissoc-in)])
         (ajure.ui [access :only (def-new-menu def-append-menu)])
-        (ajure.util other)))
+        (ajure.other misc)))
 
 (def bar (ref nil))
 (def find-box-ref (ref nil))

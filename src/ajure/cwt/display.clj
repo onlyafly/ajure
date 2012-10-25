@@ -3,7 +3,7 @@
 (ns ajure.cwt.display
   (:import (org.eclipse.swt SWT)
            (org.eclipse.swt.widgets Event Display Listener))
-  (:require (ajure.util [swt :as swt])))
+  (:require (ajure.cwt [swt :as swt])))
 
 (declare key-down-handle-event!)
 

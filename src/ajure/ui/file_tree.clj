@@ -10,7 +10,7 @@
            (org.eclipse.swt.events TreeListener SelectionAdapter MouseAdapter)
            (org.eclipse.swt.widgets Tree TreeItem TreeColumn))
   (:require (ajure.state [hooks :as hooks])
-            (ajure.util [io :as io])))
+            (ajure.io [file-io :as file-io])))
 
 (defn show-file-tree! [sash-form tab-folder show]
   (io!
@@ -27,9 +27,9 @@
 (defn- add-files-to-tree! [parent files]
   (io!
    (doseq [file files]
-     (when (io/file-visible!? file)
+     (when (file-io/file-visible!? file)
        (let [item (TreeItem. parent 0)
-             file-name (io/get-file-name-only! file)]
+             file-name (file-io/get-file-name-only! file)]
          (if (zero? (count file-name))
            (.setText item (str file))
            (.setText item file-name))
@@ -103,7 +103,7 @@
                   item (.getItem tree point)]
               (when item
                 (let [file (.getData item)]
-                  (if (io/file-not-directory!? file)
+                  (if (file-io/file-not-directory!? file)
                     (double-click-file-action file)
                     (toggle-expanded-state! item))))))))
        

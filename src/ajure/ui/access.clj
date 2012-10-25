@@ -5,7 +5,7 @@
 
 (ns ajure.ui.access
   (:require (ajure.state [hooks :as hooks])
-            (ajure.util [swt :as swt])))
+            (ajure.cwt [swt :as swt])))
 
 ;;---------- Internal use
 

@@ -4,7 +4,7 @@
   (:import (org.eclipse.swt SWT))
   (:require (ajure.ui [info :as info])
             (ajure.state [hooks :as hooks])
-            (ajure.util [swt :as swt])))
+            (ajure.cwt [swt :as swt])))
 
 (defn show-about-box! []
   (io!

@@ -12,9 +12,10 @@
 (ns ajure.core.settings
   (:require (ajure.ui [info :as info])
             (ajure.state [hooks :as hooks])
-            (ajure.util [io :as io]
-                        [platform :as platform]))
-  (:use ajure.util.other))
+            
+            (ajure.io [file-io :as file-io])
+            (ajure.os [platform :as platform]))
+  (:use ajure.other.misc))
 
 (def stored-settings-file-path (str platform/home-dir
                                     platform/file-separator
@@ -22,8 +23,8 @@
 
 (defn load-settings! []
   (io!
-   (io/create-empty-file-unless-exists! stored-settings-file-path)
-   (let [content (io/read-text-file! stored-settings-file-path)]
+   (file-io/create-empty-file-unless-exists! stored-settings-file-path)
+   (let [content (file-io/read-text-file! stored-settings-file-path)]
      (when (str-not-empty? content)
        (let [loaded-object (read-string content)]
          (dosync
@@ -31,7 +32,7 @@
 
 (defn save-settings! []
   (io!
-   (io/write-text-file! stored-settings-file-path
+   (file-io/write-text-file! stored-settings-file-path
                         (with-out-str
                           (println ";" info/application-name info/version-number-string)
                           (println "; Automatically generated file.  Modify with care.")

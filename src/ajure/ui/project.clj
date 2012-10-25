@@ -1,8 +1,7 @@
 ;; project
 
 (ns ajure.ui.project
-  (:require (ajure.core 
-                        )
+  (:require (ajure.core)
             (ajure.ui [access :as access]
                       [file-tree :as file-tree]
                       [file-dialogs :as file-dialogs]
@@ -10,12 +9,11 @@
                       [info-dialogs :as info-dialogs]
                       [recent :as recent]
                       [scripts :as scripts]
-                      [status-bar :as status-bar]
-                      )
+                      [status-bar :as status-bar])
             (ajure.state [hooks :as hooks])
-            (ajure.util [io :as io]
-                        [platform :as platform]
-                        [swt :as swt])))
+            (ajure.cwt [swt :as swt])
+            (ajure.io [file-io :as file-io])
+            (ajure.os [platform :as platform])))
 
 ;;---------- Constants
 
@@ -81,7 +79,7 @@
 (defn update-recent-projects-menu []
   (access/remove-menu-children "File" "Recent Projects")
   (doseq [file-path (@hooks/settings :recent-projects)]
-    (let [file-name (io/get-file-name-only! file-path)]
+    (let [file-name (file-io/get-file-name-only! file-path)]
       (access/def-append-sub-menu "File" "Recent Projects"
         (:item file-name
                (open-project file-path))))))
@@ -97,7 +95,7 @@
 ;; Project files should only setup the data, not the UI.  The UI should
 ;; be handled by opening routines
 (defn save-project [file-name]
-  (io/write-text-file! file-name
+  (file-io/write-text-file! file-name
                        (with-out-str
                          (let []
                            (println ";; Ajure project file, version:" info/version-number-string)
@@ -143,7 +141,7 @@
   (if (project-currently-open?)
                                         ; Project open
     (let [[initial-dir initial-file-name] (if @project-file-name
-                                            (io/get-file-name-parts! @project-file-name)
+                                            (file-io/get-file-name-parts! @project-file-name)
                                             [platform/home-dir ""])
           file-name (file-dialogs/save-dialog! @hooks/shell
                                                "Save Project As..."

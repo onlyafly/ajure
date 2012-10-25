@@ -2,7 +2,7 @@
 ;; - Document structure and creation helper functions.
 
 (ns ajure.state.doc
-  (:require (ajure.util [text-format :as text-format])))
+  (:require (ajure.io [text-format :as text-format])))
 
 (defstruct Doc
   :text-box

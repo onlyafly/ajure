@@ -4,7 +4,7 @@
   (:require (ajure.ui [status-bar :as status-bar])
 			(ajure.state [doc-state :as doc-state]
 			             [hooks :as hooks])
-            (ajure.util [swt :as swt])))
+            (ajure.cwt [swt :as swt])))
 
 (defn try-load-file [name]
   (try

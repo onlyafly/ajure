@@ -1,6 +1,6 @@
 (ns ajure.ui.recent
   (:require (ajure.state [hooks :as hooks])
-            (ajure.util [queue :as queue])))
+            (ajure.other [queue :as queue])))
 
 (defn- object-not-recent? [settings-key file-path]
   (if (some #{file-path} (@hooks/settings settings-key))

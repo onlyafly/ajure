@@ -1,10 +1,10 @@
-;; ajure.util.text-format
+;; text-format
 ;;  - Line-ending and charset support
 
-(ns ajure.util.text-format
+(ns ajure.io.text-format
   (:import (java.nio.charset Charset)
            (java.nio ByteBuffer))
-  (:use ajure.util.other))
+  (:use ajure.other.misc))
 
 ;;---------- Line ending
 

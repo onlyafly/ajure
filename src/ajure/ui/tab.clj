@@ -7,7 +7,7 @@
   (:require (ajure.ui [status-bar :as status-bar]
                       [text-editor :as text-editor])
             (ajure.state [hooks :as hooks])
-			(ajure.util [swt :as swt])))
+			(ajure.cwt [swt :as swt])))
 
 ;;TODO change to use :keys
 (defn make! [display

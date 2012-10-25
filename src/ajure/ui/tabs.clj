@@ -2,8 +2,7 @@
 ;; Management and actions on tabs
 
 (ns ajure.ui.tabs
-  (:require (ajure.core)
-            (ajure.ui [access :as access]
+  (:require (ajure.ui [access :as access]
                       [file-dialogs :as file-dialogs]
                       [info-dialogs :as info-dialogs]
                       [recent :as recent]
@@ -12,16 +11,14 @@
                       [text-editor :as text-editor]
                       [tab :as tab]
                       [tab-folder :as tab-folder]
-                      [undo :as undo]
-                      
-             )
+                      [undo :as undo])
             (ajure.state [doc-state :as doc-state]
                          [hooks :as hooks])
-            (ajure.util [platform :as platform]
-                        [swt :as swt]
-                        [io :as io]
-                        [text-format :as text-format]))
-  (:use ajure.util.other))
+            (ajure.os [platform :as platform])
+            (ajure.cwt [swt :as swt])
+            (ajure.io [file-io :as file-io]
+                      [text-format :as text-format]))
+  (:use ajure.other.misc))
 
 ;; Forward declarations
 (declare open!
@@ -173,7 +170,7 @@
   (io!
    (access/remove-menu-children "File" "Recent Files")
    (doseq [file-path (@hooks/settings :recent-files)]
-     (let [file-name (io/get-file-name-only! file-path)]
+     (let [file-name (file-io/get-file-name-only! file-path)]
        (access/def-append-sub-menu "File" "Recent Files"
          (:item file-name
                 (open-file-in-new-tab! file-path)))))))
@@ -187,14 +184,14 @@
      ;; If the file is not already open, open it in a new tab
      (when file-name
        (cond
-        (not (io/file-exists!? file-name))
+        (not (file-io/file-exists!? file-name))
         (info-dialogs/warn-file-not-exists! file-name)
-        (not (io/file-readable!? file-name))
+        (not (file-io/file-readable!? file-name))
         (info-dialogs/warn-file-not-readable! file-name)
         :else
-        (if (io/file-readable!? file-name)
+        (if (file-io/file-readable!? file-name)
           (let [[content charset]
-                (io/read-content-and-charset-of-text-file! file-name)
+                (file-io/read-content-and-charset-of-text-file! file-name)
                 [tab canvas text numbering] (tab/make! @hooks/display
                                                              @hooks/shell
                                                              @hooks/tab-folder
@@ -204,7 +201,7 @@
                                                              on-text-box-change!
                                                              open-file-paths-in-tabs!
                                                              get-style-range-functions)
-                [dir name] (io/get-file-name-parts! file-name)
+                [dir name] (file-io/get-file-name-parts! file-name)
                 content-line-endings (text-format/determine-line-endings content)
                 doc-id (doc-state/do-make-doc text 
                                               numbering
@@ -238,7 +235,7 @@
 (defn open-file-paths-in-tabs! [file-paths]
   (io!
    (doseq [path file-paths]
-     (when (io/file-not-directory!? path)
+     (when (file-io/file-not-directory!? path)
        (open-file-in-new-tab! path)))))
 
 (defn new! []
@@ -267,7 +264,7 @@
                                                    old-doc-name)]
           (if file-name
             (do
-              (let [[dir doc-name] (io/get-file-name-parts! file-name)]
+              (let [[dir doc-name] (file-io/get-file-name-parts! file-name)]
                 (dosync
                  (commute doc-state/docs
                           update-in [doc-id]
@@ -276,7 +273,7 @@
               (let [endings (doc :endings)
                     charset (doc :character-set)
                     updated-content (text-format/change-line-endings content endings)]
-                (io/write-text-file! file-name updated-content charset))
+                (file-io/write-text-file! file-name updated-content charset))
               (set-modified-status! tab-item false)
 
               (recent/add-recent-file file-name)
@@ -299,7 +296,7 @@
               (let [endings (doc :endings)
                     charset (doc :character-set)
                     updated-content (text-format/change-line-endings content endings)]
-                (io/write-text-file! file-name updated-content charset))
+                (file-io/write-text-file! file-name updated-content charset))
               (set-modified-status! tab-item false))
             (save-as! tab-item)))))))
 

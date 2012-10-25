@@ -16,8 +16,7 @@
                       [tabs :as tabs]
                       [window :as window])
 			(ajure.state [hooks :as hooks])
-            (ajure.util [swt :as swt]
-                        )))
+            (ajure.cwt [swt :as swt])))
 
 (defn set-font [name size]
   (dosync

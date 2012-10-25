@@ -13,9 +13,9 @@
            (org.eclipse.swt.layout FormLayout FormData FormAttachment)
            (org.eclipse.swt.graphics GC Font Point Image))
   (:require (ajure.state [hooks :as hooks])
-            (ajure.cwt [resources :as resources])
-            (ajure.util [swt :as swt]))
-  (:use ajure.util.other))
+            (ajure.cwt [resources :as resources]
+                       [swt :as swt]))
+  (:use ajure.other.misc))
 
 ;;---------- Line Numbering
 

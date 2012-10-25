@@ -4,7 +4,7 @@
   (:import (org.eclipse.swt SWT)
            (org.eclipse.swt.widgets Text)
            (org.eclipse.swt.events SelectionAdapter KeyAdapter KeyEvent))
-  (:require (ajure.util [swt :as swt])))
+  (:require (ajure.cwt [swt :as swt])))
 
 (defn create-search-text-box! [parent
                                hint-text

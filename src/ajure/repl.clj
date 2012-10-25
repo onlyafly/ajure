@@ -29,7 +29,7 @@
 ;; - Execute (ajure.threaded/thread-gui)
 (defn thread-gui []
   "Launch GUI interface in a thread to enable repl debugging"
-  (let [thread (Thread. start-gui)]
+  (let [thread (Thread. ^Runnable start-gui)]
     (.start thread)))
 
 ;; To simplify debugging on the REPL, this function allows you to

@@ -20,12 +20,12 @@
                          [doc-state :as doc-state])
             (ajure.cwt [display :as display]
                        [resources :as resources]
-                       [shell :as shell])
-            (ajure.util [platform :as platform]
-                        [swt :as swt]
-                        [text-format :as text-format]))
+                       [shell :as shell]
+                       [swt :as swt])
+            (ajure.os [platform :as platform])
+            (ajure.io [text-format :as text-format]))
   (:use (ajure.ui [access :only (def-menu def-append-sub-menu remove-menu-children)])
-        ajure.util.other))
+        ajure.other.misc))
 
 ;;---------- Private
 

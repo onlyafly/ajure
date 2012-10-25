@@ -3,8 +3,8 @@
            (org.eclipse.swt.custom CTabFolder CTabFolder2Adapter)
            (org.eclipse.swt.events SelectionAdapter))
   (:require (ajure.state [hooks :as hooks])
-            (ajure.cwt [resources :as resources])
-            (ajure.util [swt :as swt])))
+            (ajure.cwt [resources :as resources]
+                       [swt :as swt])))
 
 (defn current-tab []
   (.getSelection @hooks/tab-folder))

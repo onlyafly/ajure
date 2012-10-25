@@ -1,9 +1,9 @@
-;; ajure.util.swt
+;; swt
 ;;
 ;; Should
 ;;  - Provide access to basic SWT functionality
 
-(ns ajure.util.swt
+(ns ajure.cwt.swt
   (:import (org.eclipse.swt SWT)
            (org.eclipse.swt.dnd DND DropTarget Transfer FileTransfer
                                 DropTargetAdapter DropTargetEvent
@@ -13,8 +13,8 @@
            (org.eclipse.swt.layout GridLayout)
            (org.eclipse.swt.events SelectionAdapter VerifyEvent)
            (org.eclipse.swt.graphics RGB Color Point))
-  (:require (ajure.util [other :as other]
-                        [platform :as platform])))
+  (:require (ajure.other [misc :as misc])
+            (ajure.os [platform :as platform])))
 
 (defn basic-loop! [^Display display
                    ^Shell shell
@@ -114,7 +114,7 @@
 
 (defn show-warning-dialog! [shell title msg]
   (io!
-   (let [box (MessageBox. shell (other/bit-or-many SWT/ICON_WARNING
+   (let [box (MessageBox. shell (misc/bit-or-many SWT/ICON_WARNING
                                                    SWT/OK))]
      (doto box
        (.setText title)
@@ -123,7 +123,7 @@
 
 (defn show-info-dialog! [shell title msg]
   (io!
-   (let [box (MessageBox. shell (other/bit-or-many SWT/ICON_INFORMATION
+   (let [box (MessageBox. shell (misc/bit-or-many SWT/ICON_INFORMATION
                                                    SWT/OK))]
      (doto box
        (.setText title)
@@ -132,7 +132,7 @@
 
 (defn show-confirmation-dialog! [shell title msg]
   (io!
-   (let [box (MessageBox. shell (other/bit-or-many SWT/ICON_WARNING SWT/YES
+   (let [box (MessageBox. shell (misc/bit-or-many SWT/ICON_WARNING SWT/YES
                                                    SWT/NO SWT/CANCEL))]
      (doto box
        (.setText title)
@@ -209,7 +209,7 @@
        (if remaining-mappings
          (let [[[mod-vector expected-char] action] (first remaining-mappings)
                is-matched-char (= expected-char actual-char)
-               is-matched-mask (= 0 (apply other/bit-xor-many mask mod-vector))]
+               is-matched-mask (= 0 (apply misc/bit-xor-many mask mod-vector))]
            (if (and is-matched-mask is-matched-char)
              (do
                (action)
@@ -219,7 +219,7 @@
 (defn add-file-dropping-to-control! [^Control control
                                      drop-action]
   (io!
-    (let [drop-target (DropTarget. control (other/bit-or-many DND/DROP_DEFAULT
+    (let [drop-target (DropTarget. control (misc/bit-or-many DND/DROP_DEFAULT
                                                               DND/DROP_MOVE))
           file-transfer (FileTransfer/getInstance)
           transfer-array (into-array FileTransfer [file-transfer])]
@@ -262,7 +262,7 @@
               (.toUpperCase (str c)))))))
 
 (defmacro options [& options]
-  `(other/bit-or-many 
+  `(misc/bit-or-many 
     ~@(map (fn [x] (symbol "org.eclipse.swt.SWT" (str x)))
            options)))
 

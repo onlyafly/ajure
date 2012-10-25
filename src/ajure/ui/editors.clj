@@ -1,4 +1,4 @@
-;; ajure.ui.editors
+;; editors
 ;;
 ;; Should Do:
 ;;  - Operations related to the text editors
@@ -10,8 +10,8 @@
                       [fonts :as fonts])
             (ajure.state [hooks :as hooks]
                          [doc-state :as doc-state])
-            (ajure.util [swt :as swt]))
-  (:use ajure.util.other))
+            (ajure.cwt [swt :as swt]))
+  (:use ajure.other.misc))
 
 (defn set-current-word-wrap [enable]
   (dosync

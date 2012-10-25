@@ -7,9 +7,9 @@
            (org.eclipse.swt.layout GridLayout GridData)
            (org.eclipse.swt.events ShellAdapter)
            (org.eclipse.swt.graphics Image GC))
-  (:require (ajure.util [platform :as platform]
-                        [swt :as swt]
-                        [other :as other])))
+  (:require (ajure.os [platform :as platform])
+            (ajure.cwt [swt :as swt])
+            (ajure.other [misc :as misc])))
 
 ;;---------- Private
 
