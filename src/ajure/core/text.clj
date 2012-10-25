@@ -6,7 +6,7 @@
   (:import (org.eclipse.swt.custom ST))
   (:require (ajure.state [doc-state :as doc-state]))
   (:use (ajure.state [doc-state :only (current)])
-        ;;FIX(ajure.gui [access :only (def-menu)])
+        (ajure.ui [access :only (def-menu)])
         ))
 
 ;; TODO there are many more actions in ST that can be used
@@ -62,8 +62,7 @@
 ;;---------- Text Menu
 
 (defn build-text-menu! []
-  ;;FIX
-  #_(io!
+  (io!
    (def-menu "Text"
      (:item "Change to Lowercase"
             (convert-selection-to-lowercase!))

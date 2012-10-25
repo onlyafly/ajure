@@ -4,15 +4,16 @@
 ;;   releases
 
 (ns ajure.util.mac
-  (import ;;FIX (org.eclipse.swt.internal.carbon OS HICommand)
-   ;;FIX(org.eclipse.swt.internal Callback)
+  (import
+   ;;TODO (org.eclipse.swt.internal.carbon OS HICommand)
+   ;;TODO(org.eclipse.swt.internal Callback)
    )
   )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Mac Application Menu
 
-;; TODO: not comp1lete
+;; TODO: not complete
 #_(
    (def kHICommandAbout
      (+ (bit-shift-left (int \a) 24)

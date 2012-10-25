@@ -6,6 +6,7 @@
             (ajure.ui [access :as access]
                       [file-tree :as file-tree]
                       [file-dialogs :as file-dialogs]
+                      [info :as info]
                       [info-dialogs :as info-dialogs]
                       [recent :as recent]
                       [scripts :as scripts]
@@ -99,7 +100,7 @@
   (io/write-text-file! file-name
                        (with-out-str
                          (let []
-                           ;;FIX(println ";; Ajure project file, version:" info/version-number-string)
+                           (println ";; Ajure project file, version:" info/version-number-string)
                            (println ";; Automatically generated file.  Modify with care.")
                            (newline)
                            (prn `(use 'ajure.core.project))

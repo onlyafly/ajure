@@ -10,9 +10,9 @@
 ;;  - Interface with GUI components at all
 
 (ns ajure.core.settings
-  (:require (ajure.state [hooks :as hooks])
+  (:require (ajure.ui [info :as info])
+            (ajure.state [hooks :as hooks])
             (ajure.util [io :as io]
-                        ;;FIX[info :as info]
                         [platform :as platform]))
   (:use ajure.util.other))
 
@@ -33,7 +33,7 @@
   (io!
    (io/write-text-file! stored-settings-file-path
                         (with-out-str
-                          ;;FIX(println ";" info/application-name info/version-number-string)
+                          (println ";" info/application-name info/version-number-string)
                           (println "; Automatically generated file.  Modify with care.")
                           (println "{")
                           (doseq [pair @hooks/settings]

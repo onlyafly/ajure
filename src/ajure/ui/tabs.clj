@@ -2,12 +2,9 @@
 ;; Management and actions on tabs
 
 (ns ajure.ui.tabs
-  (:require (ajure.core
-                        ;;FIX[file-utils :as file]
-             )
+  (:require (ajure.core)
             (ajure.ui [access :as access]
                       [file-dialogs :as file-dialogs]
-                      ;;FIX[resources :as resources]
                       [info-dialogs :as info-dialogs]
                       [recent :as recent]
                       [scripts :as scripts]
